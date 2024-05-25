@@ -662,10 +662,14 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                 }
                 emit processRestarted(notifypid);
             }
-            /*else if(status != 0)//interrupt
+            else if(status >> 16 == PTRACE_EVENT_STOP)//group-stop
             {
-                emit processStopped(notifypid);
-            }*/
+                ptrace(PTRACE_LISTEN, notifypid, 0, 0);
+            }
+			else if(WIFSTOPPED(status))
+			{
+				ptrace(PTRACE_restart, notifypid, 0, WSTOPSIG(status));
+			}
         }
         emit sendStop();
     }
