@@ -415,5 +415,15 @@ FluContentPage{
             console.log("shown")
             table_view.appendRow(getObject(pid, status, name, nr, arg1, arg2, arg3, arg4, arg5, arg6))
         }
+        function onIsTracingChanged(val) {
+            if(val == 0) {
+                home_btn_start.enabled = true
+                home_btn_start_remote.enabled = true
+                home_btn_stop.enabled = false
+                home_btn_stop_remote.enabled = false
+                home_btn_to_local.enabled = true
+                home_btn_to_remote.enabled = true
+            }
+        }
     }
 }
