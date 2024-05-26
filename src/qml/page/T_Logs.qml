@@ -52,7 +52,7 @@ FluContentPage{
                 maximumWidth:parent.width - 180
             },
             {
-                title: qsTr("Options"),
+                title: qsTr("Optios"),
                 dataIndex: 'action',
                 width:150,
                 minimumWidth:150,
