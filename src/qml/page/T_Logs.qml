@@ -47,9 +47,9 @@ FluContentPage{
             {
                 title: qsTr("Log"),
                 dataIndex: 'logs',
-                width:parent.width - 150,
-                minimumWidth:parent.width - 150,
-                maximumWidth:parent.width - 150
+                width:parent.width - 180,
+                minimumWidth:parent.width - 180,
+                maximumWidth:parent.width - 180
             },
             {
                 title: qsTr("Options"),
