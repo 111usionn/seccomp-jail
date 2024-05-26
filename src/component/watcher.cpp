@@ -17,19 +17,6 @@ Watcher::Watcher(QObject *parent)
     addroffset = 0;
     settings.enableLDPRELOAD = 1;
 }
-unsigned long Watcher::set_trap(int pid, int option, unsigned long addr)
-{
-    int sjpfd = open("/tmp/sj_prison", O_WRONLY | O_CREAT | O_TRUNC, 0666);
-    unsigned long targetreg = 8 * RDI;
-    write(sjpfd, &pid, sizeof(pid));
-    write(sjpfd, &option, sizeof(option));
-    if(!option)
-    {
-        write(sjpfd, &addr, sizeof(addr));
-    }
-    close(sjpfd);
-    return (unsigned long)syscall(335);
-}
 
 int Watcher::gethookoffset()
 {
@@ -117,7 +104,7 @@ void Watcher::injector(int pid, int nr, long arg1, long arg2, long arg3, long ar
     do{
         fgets(buf, 0x100, fd);
         qDebug () << buf;
-    } while(!strstr(buf, "libc.") || !strstr(buf, "xp "));
+    } while(!strstr(buf, settings.enableLDPRELOAD?"libhookhere.":"libc.") || !strstr(buf, "xp "));
     end = strchr(buf, '-');
     libcAddr = strtol(buf, &end, 16);
     injectedPid = pid;
@@ -542,45 +529,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                 ptrace(PTRACE_CONT, notifypid, 0, 0);
                 emit processRestarted(notifypid);
             }
-#if 0
-            else if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_FORK<<8)))
-            {
-                qDebug() << "forked";
-                pid_t new_proc_pid = 0;
-                int new_status;
-                ptrace(PTRACE_GETEVENTMSG, notifypid, 0, &new_proc_pid);
-                while(!new_proc_pid){1;}//if not wait, PTRACE_SETOPTIONS cant success, it seems like PTRACE_GETEVENTMSG doesnt block until new_proc_pid get vaule
-                waitpid(new_proc_pid, &new_status, __WALL);
-                if(new_status >> 8 == (SIGTRAP | (PTRACE_EVENT_STOP<<8)))qDebug() << "event stop";
-                ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  PTRACE_O_TRACESECCOMP | PTRACE_O_EXITKILL | PTRACE_O_TRACECLONE | PTRACE_O_TRACEFORK | PTRACE_O_TRACEVFORK | PTRACE_O_TRACEEXEC);
-                ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
-                ptrace(PTRACE_CONT, notifypid, 0, 0);
-            }
-            else if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_VFORK<<8)))
-            {
-                qDebug() << "vforked";
-                pid_t new_proc_pid = 0;
-                int new_status;
-                ptrace(PTRACE_GETEVENTMSG, notifypid, 0, &new_proc_pid);
-                while(!new_proc_pid){1;}
-                waitpid(new_proc_pid, &new_status, __WALL);
-                ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  PTRACE_O_TRACESECCOMP | PTRACE_O_EXITKILL | PTRACE_O_TRACECLONE | PTRACE_O_TRACEFORK | PTRACE_O_TRACEVFORK | PTRACE_O_TRACEEXEC);
-                ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
-                ptrace(PTRACE_CONT, notifypid, 0, 0);
-            }
-            else if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE<<8)))
-            {
-                qDebug() << "cloned";
-                pid_t new_proc_pid = 0;
-                int new_status;
-                ptrace(PTRACE_GETEVENTMSG, notifypid, 0, &new_proc_pid);
-                while(!new_proc_pid){1;}
-                waitpid(new_proc_pid, &new_status, __WALL);
-                ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  PTRACE_O_TRACESECCOMP | PTRACE_O_EXITKILL | PTRACE_O_TRACECLONE | PTRACE_O_TRACEFORK | PTRACE_O_TRACEVFORK | PTRACE_O_TRACEEXEC);
-                ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
-                ptrace(PTRACE_CONT, notifypid, 0, 0);
-            }
-#endif
             else if(WIFSTOPPED(status) && WSTOPSIG(status) == SIGTRAP)//int3
             {
                 qDebug() << "juDge int3";
