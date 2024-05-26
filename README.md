@@ -20,6 +20,10 @@
 
 &#9745;能够动态地根据用户输入生成对应系统调用的结果。
 
+## 测试记录
+
+[Tests](https://github.com/111usionn/seccomp-jail/wiki/%E6%B5%8B%E8%AF%95%E8%AE%B0%E5%BD%95)
+
 ## 原理介绍
 
 ### PTRACE
