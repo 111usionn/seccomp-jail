@@ -1,8 +1,6 @@
+@[TOC]
+
 # seccomp-jail
-
-##目录
-
-[TOC]
 
 ## 项目描述
 
