@@ -71,7 +71,7 @@ rule CXX_EXECUTABLE_LINKER__seccomp-jail_Release
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /usr/bin/cmake --regenerate-during-build -S/home/user/fluentuiapps/seccomp-jail -B/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release
+  command = /usr/bin/cmake --regenerate-during-build -S/home/user/fluentuiapps/gits/seccomp-jail -B/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release
   description = Re-running CMake...
   generator = 1
 

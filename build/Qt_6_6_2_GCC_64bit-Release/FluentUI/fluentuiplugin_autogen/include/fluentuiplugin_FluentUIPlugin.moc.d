@@ -1,5 +1,5 @@
-/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/include/fluentuiplugin_FluentUIPlugin.moc: /home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_FluentUIPlugin.cpp \
-  /home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/moc_predefs.h \
+/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/include/fluentuiplugin_FluentUIPlugin.moc: /home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_FluentUIPlugin.cpp \
+  /home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/moc_predefs.h \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/QUrl \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/q20algorithm.h \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/q20functional.h \

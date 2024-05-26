@@ -1,6 +1,6 @@
-/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/EWIEGA46WW/moc_FluCaptcha.cpp: /home/user/fluentuiapps/seccomp-jail/FluentUI/FluCaptcha.h \
-  /home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/moc_predefs.h \
-  /home/user/fluentuiapps/seccomp-jail/FluentUI/stdafx.h \
+/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/EWIEGA46WW/moc_FluCaptcha.cpp: /home/user/fluentuiapps/gits/seccomp-jail/FluentUI/FluCaptcha.h \
+  /home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/moc_predefs.h \
+  /home/user/fluentuiapps/gits/seccomp-jail/FluentUI/stdafx.h \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/QList \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/QObject \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/QRect \

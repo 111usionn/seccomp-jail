@@ -1,6 +1,6 @@
-/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/EWIEGA46WW/moc_FluTreeModel.cpp: /home/user/fluentuiapps/seccomp-jail/FluentUI/FluTreeModel.h \
-  /home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/moc_predefs.h \
-  /home/user/fluentuiapps/seccomp-jail/FluentUI/stdafx.h \
+/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/EWIEGA46WW/moc_FluTreeModel.cpp: /home/user/fluentuiapps/gits/seccomp-jail/FluentUI/FluTreeModel.h \
+  /home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/moc_predefs.h \
+  /home/user/fluentuiapps/gits/seccomp-jail/FluentUI/stdafx.h \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/QAbstractTableModel \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/QJsonArray \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/QObject \

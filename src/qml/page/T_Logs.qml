@@ -47,16 +47,16 @@ FluContentPage{
             {
                 title: qsTr("Log"),
                 dataIndex: 'logs',
-                width:parent.width - 180,
-                minimumWidth:parent.width - 180,
-                maximumWidth:parent.width - 180
+                width:parent.width - 190,
+                minimumWidth:parent.width - 190,
+                maximumWidth:parent.width - 190
             },
             {
-                title: qsTr("Optios"),
+                title: qsTr("Options"),
                 dataIndex: 'action',
-                width:150,
-                minimumWidth:150,
-                maximumWidth:150
+                width:170,
+                minimumWidth:170,
+                maximumWidth:170
             }
         ]
     }

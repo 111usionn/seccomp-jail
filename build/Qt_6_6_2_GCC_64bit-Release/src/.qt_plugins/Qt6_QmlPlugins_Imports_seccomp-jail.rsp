@@ -1,9 +1,9 @@
 -rootPath
-/home/user/fluentuiapps/seccomp-jail/src
+/home/user/fluentuiapps/gits/seccomp-jail/src
 -cmake-output
 -output-file
-/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/.qt_plugins/Qt6_QmlPlugins_Imports_seccomp-jail.cmake
+/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/.qt_plugins/Qt6_QmlPlugins_Imports_seccomp-jail.cmake
 -importPath
-/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src
+/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src
 -importPath
 /opt/Qt/6.6.2/gcc_64/./qml

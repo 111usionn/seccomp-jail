@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "/home/user/fluentuiapps/seccomp-jail/bin/Release/seccomp-jail"
+			"path" : "/home/user/fluentuiapps/gits/seccomp-jail/bin/Release/seccomp-jail"
 		}
 	],
 	"backtrace" : 4,
@@ -688,7 +688,7 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/include"
+					"path" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/include"
 				},
 				{
 					"backtrace" : 97,
@@ -783,11 +783,11 @@
 			"id" : "seccomp-jail_qmlimportscan::@145eef247bfb46b6828c"
 		},
 		{
-			"backtrace" : 0,
-			"id" : "seccomp-jail_autogen::@145eef247bfb46b6828c"
+			"id" : "seccomp-jail_autogen_timestamp_deps::@145eef247bfb46b6828c"
 		},
 		{
-			"id" : "seccomp-jail_autogen_timestamp_deps::@145eef247bfb46b6828c"
+			"backtrace" : 0,
+			"id" : "seccomp-jail_autogen::@145eef247bfb46b6828c"
 		}
 	],
 	"id" : "seccomp-jail::@145eef247bfb46b6828c",

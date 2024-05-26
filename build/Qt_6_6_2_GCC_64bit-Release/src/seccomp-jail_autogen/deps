@@ -1,25 +1,25 @@
 seccomp-jail_autogen/timestamp: \
-	/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/.qtc/package-manager/auto-setup.cmake \
-	/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/moc_predefs.h \
-	/home/user/fluentuiapps/seccomp-jail/src/CMakeLists.txt \
-	/home/user/fluentuiapps/seccomp-jail/src/component/CircularReveal.cpp \
-	/home/user/fluentuiapps/seccomp-jail/src/component/CircularReveal.h \
-	/home/user/fluentuiapps/seccomp-jail/src/component/FileWatcher.cpp \
-	/home/user/fluentuiapps/seccomp-jail/src/component/FileWatcher.h \
-	/home/user/fluentuiapps/seccomp-jail/src/component/FpsItem.cpp \
-	/home/user/fluentuiapps/seccomp-jail/src/component/FpsItem.h \
-	/home/user/fluentuiapps/seccomp-jail/src/component/OpenGLItem.cpp \
-	/home/user/fluentuiapps/seccomp-jail/src/component/OpenGLItem.h \
-	/home/user/fluentuiapps/seccomp-jail/src/component/clipboard.cpp \
-	/home/user/fluentuiapps/seccomp-jail/src/component/clipboard.h \
-	/home/user/fluentuiapps/seccomp-jail/src/component/controller.cpp \
-	/home/user/fluentuiapps/seccomp-jail/src/component/controller.h \
-	/home/user/fluentuiapps/seccomp-jail/src/component/global.h \
-	/home/user/fluentuiapps/seccomp-jail/src/component/watcher.cpp \
-	/home/user/fluentuiapps/seccomp-jail/src/component/watcher.h \
-	/home/user/fluentuiapps/seccomp-jail/src/main.cpp \
-	/home/user/fluentuiapps/seccomp-jail/src/qml.qrc \
-	/home/user/fluentuiapps/seccomp-jail/src/stdafx.h \
+	/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/.qtc/package-manager/auto-setup.cmake \
+	/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/moc_predefs.h \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/CMakeLists.txt \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/CircularReveal.cpp \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/CircularReveal.h \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/FileWatcher.cpp \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/FileWatcher.h \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/FpsItem.cpp \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/FpsItem.h \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/OpenGLItem.cpp \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/OpenGLItem.h \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/clipboard.cpp \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/clipboard.h \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/controller.cpp \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/controller.h \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/global.h \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/watcher.cpp \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/component/watcher.h \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/main.cpp \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/qml.qrc \
+	/home/user/fluentuiapps/gits/seccomp-jail/src/stdafx.h \
 	/opt/Qt/6.6.2/gcc_64/include/QtCore/QCoreApplication \
 	/opt/Qt/6.6.2/gcc_64/include/QtCore/QDateTime \
 	/opt/Qt/6.6.2/gcc_64/include/QtCore/QDebug \

@@ -1,4 +1,4 @@
-# Install script for directory: /home/user/fluentuiapps/seccomp-jail/src
+# Install script for directory: /home/user/fluentuiapps/gits/seccomp-jail/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -49,7 +49,7 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/seccomp-jail"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/user/fluentuiapps/seccomp-jail/bin/Release/seccomp-jail")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/user/fluentuiapps/gits/seccomp-jail/bin/Release/seccomp-jail")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/seccomp-jail" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/seccomp-jail")
     file(RPATH_CHANGE

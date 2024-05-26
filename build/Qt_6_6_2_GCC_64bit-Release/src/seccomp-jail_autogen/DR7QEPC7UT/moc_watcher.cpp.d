@@ -1,6 +1,6 @@
-/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/DR7QEPC7UT/moc_watcher.cpp: /home/user/fluentuiapps/seccomp-jail/src/component/watcher.h \
-  /home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/moc_predefs.h \
-  /home/user/fluentuiapps/seccomp-jail/src/component/global.h \
+/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/DR7QEPC7UT/moc_watcher.cpp: /home/user/fluentuiapps/gits/seccomp-jail/src/component/watcher.h \
+  /home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/moc_predefs.h \
+  /home/user/fluentuiapps/gits/seccomp-jail/src/component/global.h \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/QCoreApplication \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/QDateTime \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/QDebug \

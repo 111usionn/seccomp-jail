@@ -9319,8 +9319,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release",
-		"source" : "/home/user/fluentuiapps/seccomp-jail"
+		"build" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release",
+		"source" : "/home/user/fluentuiapps/gits/seccomp-jail"
 	},
 	"version" : 
 	{

@@ -1,13 +1,13 @@
 {
-	"BUILD_DIR" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen",
-	"CMAKE_BINARY_DIR" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release",
-	"CMAKE_CURRENT_BINARY_DIR" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src",
-	"CMAKE_CURRENT_SOURCE_DIR" : "/home/user/fluentuiapps/seccomp-jail/src",
+	"BUILD_DIR" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen",
+	"CMAKE_BINARY_DIR" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/user/fluentuiapps/gits/seccomp-jail/src",
 	"CMAKE_EXECUTABLE" : "/usr/bin/cmake",
 	"CMAKE_LIST_FILES" : 
 	[
-		"/home/user/fluentuiapps/seccomp-jail/src/CMakeLists.txt",
-		"/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/.qtc/package-manager/auto-setup.cmake",
+		"/home/user/fluentuiapps/gits/seccomp-jail/src/CMakeLists.txt",
+		"/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/.qtc/package-manager/auto-setup.cmake",
 		"/opt/Qt/6.6.2/gcc_64/lib/cmake/Qt6/Qt6ConfigVersion.cmake",
 		"/opt/Qt/6.6.2/gcc_64/lib/cmake/Qt6/Qt6ConfigVersionImpl.cmake",
 		"/opt/Qt/6.6.2/gcc_64/lib/cmake/Qt6/Qt6Config.cmake",
@@ -1050,72 +1050,72 @@
 		"/opt/Qt/6.6.2/gcc_64/lib/cmake/Qt6Quick/Qt6QuickTargets-relwithdebinfo.cmake",
 		"/opt/Qt/6.6.2/gcc_64/lib/cmake/Qt6Quick/Qt6QuickAdditionalTargetInfo.cmake",
 		"/opt/Qt/6.6.2/gcc_64/lib/cmake/Qt6Quick/Qt6QuickVersionlessTargets.cmake",
-		"/home/user/fluentuiapps/seccomp-jail/src/qml.qrc",
+		"/home/user/fluentuiapps/gits/seccomp-jail/src/qml.qrc",
 		"/usr/share/cmake-3.25/Modules/GNUInstallDirs.cmake"
 	],
-	"CMAKE_SOURCE_DIR" : "/home/user/fluentuiapps/seccomp-jail",
-	"DEP_FILE" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/deps",
+	"CMAKE_SOURCE_DIR" : "/home/user/fluentuiapps/gits/seccomp-jail",
+	"DEP_FILE" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/deps",
 	"DEP_FILE_RULE_NAME" : "seccomp-jail_autogen/timestamp",
 	"HEADERS" : 
 	[
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/CircularReveal.h",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/CircularReveal.h",
 			"Mu",
 			"DR7QEPC7UT/moc_CircularReveal.cpp",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/FileWatcher.h",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/FileWatcher.h",
 			"Mu",
 			"DR7QEPC7UT/moc_FileWatcher.cpp",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/FpsItem.h",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/FpsItem.h",
 			"Mu",
 			"DR7QEPC7UT/moc_FpsItem.cpp",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/OpenGLItem.h",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/OpenGLItem.h",
 			"Mu",
 			"DR7QEPC7UT/moc_OpenGLItem.cpp",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/clipboard.h",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/clipboard.h",
 			"Mu",
 			"DR7QEPC7UT/moc_clipboard.cpp",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/controller.h",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/controller.h",
 			"Mu",
 			"DR7QEPC7UT/moc_controller.cpp",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/global.h",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/global.h",
 			"Mu",
 			"DR7QEPC7UT/moc_global.cpp",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/watcher.h",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/watcher.h",
 			"Mu",
 			"DR7QEPC7UT/moc_watcher.cpp",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/stdafx.h",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/stdafx.h",
 			"Mu",
 			"EWIEGA46WW/moc_stdafx.cpp",
 			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
-	"INCLUDE_DIR" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/include",
-	"MOC_COMPILATION_FILE" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/mocs_compilation.cpp",
+	"INCLUDE_DIR" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/include",
+	"MOC_COMPILATION_FILE" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/mocs_compilation.cpp",
 	"MOC_DEFINITIONS" : 
 	[
 		"QT_CORE_LIB",
@@ -1173,55 +1173,55 @@
 		"-c",
 		"/usr/share/cmake-3.25/Modules/CMakeCXXCompilerABI.cpp"
 	],
-	"MOC_PREDEFS_FILE" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/moc_predefs.h",
+	"MOC_PREDEFS_FILE" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/moc_predefs.h",
 	"MOC_RELAXED_MODE" : false,
 	"MOC_SKIP" : [],
 	"MULTI_CONFIG" : false,
 	"PARALLEL" : 4,
-	"PARSE_CACHE_FILE" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/CMakeFiles/seccomp-jail_autogen.dir/ParseCache.txt",
+	"PARSE_CACHE_FILE" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/CMakeFiles/seccomp-jail_autogen.dir/ParseCache.txt",
 	"QT_MOC_EXECUTABLE" : "/opt/Qt/6.6.2/gcc_64/./libexec/moc",
 	"QT_UIC_EXECUTABLE" : "",
 	"QT_VERSION_MAJOR" : 6,
 	"QT_VERSION_MINOR" : 6,
-	"SETTINGS_FILE" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/CMakeFiles/seccomp-jail_autogen.dir/AutogenUsed.txt",
+	"SETTINGS_FILE" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/CMakeFiles/seccomp-jail_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/CircularReveal.cpp",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/CircularReveal.cpp",
 			"Mu",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/FileWatcher.cpp",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/FileWatcher.cpp",
 			"Mu",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/FpsItem.cpp",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/FpsItem.cpp",
 			"Mu",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/OpenGLItem.cpp",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/OpenGLItem.cpp",
 			"Mu",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/clipboard.cpp",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/clipboard.cpp",
 			"Mu",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/controller.cpp",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/controller.cpp",
 			"Mu",
 			null
 		],
 		[
-			"/home/user/fluentuiapps/seccomp-jail/src/component/watcher.cpp",
+			"/home/user/fluentuiapps/gits/seccomp-jail/src/component/watcher.cpp",
 			"Mu",
 			null
 		],
-		[ "/home/user/fluentuiapps/seccomp-jail/src/main.cpp", "Mu", null ]
+		[ "/home/user/fluentuiapps/gits/seccomp-jail/src/main.cpp", "Mu", null ]
 	],
 	"VERBOSITY" : 0
 }

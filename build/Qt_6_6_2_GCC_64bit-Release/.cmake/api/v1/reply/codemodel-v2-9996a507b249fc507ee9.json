@@ -50,7 +50,7 @@
 				{
 					"build" : "src",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-src-Release-3c962204f2b446f43fda.json",
+					"jsonFile" : "directory-src-Release-ecdc1a5dcbc49861b066.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.16"
@@ -166,7 +166,7 @@
 				{
 					"directoryIndex" : 1,
 					"id" : "fluentuiplugin::@7366c80dbef1255836ce",
-					"jsonFile" : "target-fluentuiplugin-Release-989768ffaaf918e11d5b.json",
+					"jsonFile" : "target-fluentuiplugin-Release-22b0e310d80921732e89.json",
 					"name" : "fluentuiplugin",
 					"projectIndex" : 1
 				},
@@ -229,7 +229,7 @@
 				{
 					"directoryIndex" : 2,
 					"id" : "seccomp-jail::@145eef247bfb46b6828c",
-					"jsonFile" : "target-seccomp-jail-Release-38fb75ea078f1c038530.json",
+					"jsonFile" : "target-seccomp-jail-Release-e3e97a4f4805f6275a99.json",
 					"name" : "seccomp-jail",
 					"projectIndex" : 0
 				},
@@ -260,8 +260,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release",
-		"source" : "/home/user/fluentuiapps/seccomp-jail"
+		"build" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release",
+		"source" : "/home/user/fluentuiapps/gits/seccomp-jail"
 	},
 	"version" : 
 	{

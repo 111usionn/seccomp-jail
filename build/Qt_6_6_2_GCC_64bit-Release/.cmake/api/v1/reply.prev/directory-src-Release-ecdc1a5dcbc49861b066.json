@@ -30,7 +30,7 @@
 			"destination" : "bin",
 			"paths" : 
 			[
-				"/home/user/fluentuiapps/seccomp-jail/bin/Release/seccomp-jail"
+				"/home/user/fluentuiapps/gits/seccomp-jail/bin/Release/seccomp-jail"
 			],
 			"targetId" : "seccomp-jail::@145eef247bfb46b6828c",
 			"targetIndex" : 15,

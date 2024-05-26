@@ -1,4 +1,4 @@
-# Install script for directory: /home/user/fluentuiapps/seccomp-jail/FluentUI
+# Install script for directory: /home/user/fluentuiapps/gits/seccomp-jail/FluentUI
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -616,7 +616,7 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
             }
 			else if(WIFSTOPPED(status))
 			{
-				ptrace(PTRACE_restart, notifypid, 0, WSTOPSIG(status));
+                ptrace(PTRACE_CONT, notifypid, 0, WSTOPSIG(status));
 			}
         }
         emit sendStop();

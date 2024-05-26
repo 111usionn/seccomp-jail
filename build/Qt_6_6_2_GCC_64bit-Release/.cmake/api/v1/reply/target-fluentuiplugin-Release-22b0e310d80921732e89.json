@@ -1730,11 +1730,11 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/include"
+					"path" : "/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/FluentUI/fluentuiplugin_autogen/include"
 				},
 				{
 					"backtrace" : 60,
-					"path" : "/home/user/fluentuiapps/seccomp-jail/FluentUI"
+					"path" : "/home/user/fluentuiapps/gits/seccomp-jail/FluentUI"
 				},
 				{
 					"backtrace" : 61,

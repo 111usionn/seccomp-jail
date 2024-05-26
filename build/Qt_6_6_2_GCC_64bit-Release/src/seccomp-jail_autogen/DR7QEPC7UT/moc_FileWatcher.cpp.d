@@ -1,6 +1,6 @@
-/home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/DR7QEPC7UT/moc_FileWatcher.cpp: /home/user/fluentuiapps/seccomp-jail/src/component/FileWatcher.h \
-  /home/user/fluentuiapps/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/moc_predefs.h \
-  /home/user/fluentuiapps/seccomp-jail/src/stdafx.h \
+/home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/DR7QEPC7UT/moc_FileWatcher.cpp: /home/user/fluentuiapps/gits/seccomp-jail/src/component/FileWatcher.h \
+  /home/user/fluentuiapps/gits/seccomp-jail/build/Qt_6_6_2_GCC_64bit-Release/src/seccomp-jail_autogen/moc_predefs.h \
+  /home/user/fluentuiapps/gits/seccomp-jail/src/stdafx.h \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/QFileSystemWatcher \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/QObject \
   /opt/Qt/6.6.2/gcc_64/include/QtCore/q20functional.h \
