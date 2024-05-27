@@ -78,43 +78,6 @@ FluWindow {
             FluTheme.darkMode = FluThemeType.Dark
         }
     }
-    /*Column{
-        anchors.centerIn: parent
-        spacing: 15
-        Image{
-            width: 60
-            height: 60
-            source: "qrc:/logo.ico"
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-        FluText{
-            text: qsTr("Welcome to FluentUI")
-            anchors.horizontalCenter: parent.horizontalCenter
-            font: FluTextStyle.Title
-        }
-        FluFilledButton{
-            text: qsTr("Learn FluentUI")
-            anchors.horizontalCenter: parent.horizontalCenter
-            onClicked: {
-                Qt.openUrlExternally("https://space.bilibili.com/275661059")
-            }
-        }
-    }
-
-    Row{
-        anchors{
-            bottom: parent.bottom
-            bottomMargin: 14
-            horizontalCenter: parent.horizontalCenter
-        }
-        FluText{
-            text: qsTr("Author's WeChat ID: ")
-        }
-        FluText{
-            text: "FluentUI"
-            color: FluTheme.fontSecondaryColor
-        }
-    }*/
     Component{
         id: nav_item_right_menu
         FluMenu{

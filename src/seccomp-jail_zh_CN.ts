@@ -429,48 +429,48 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="123"/>
+        <location filename="main.qml" line="86"/>
         <source>Open in Separate Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="219"/>
+        <location filename="main.qml" line="182"/>
         <source>Click Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="229"/>
+        <location filename="main.qml" line="192"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="252"/>
-        <location filename="main.qml" line="260"/>
+        <location filename="main.qml" line="215"/>
+        <location filename="main.qml" line="223"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="253"/>
+        <location filename="main.qml" line="216"/>
         <source>Are you sure you want to exit the program?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="254"/>
+        <location filename="main.qml" line="217"/>
         <source>Minimize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="257"/>
+        <location filename="main.qml" line="220"/>
         <source>Friendly Reminder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="257"/>
+        <location filename="main.qml" line="220"/>
         <source>FluentUI is hidden from the tray, click on the tray to activate the window again</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="261"/>
+        <location filename="main.qml" line="224"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>

@@ -415,7 +415,7 @@ FluContentPage{
             console.log("shown")
             table_view.appendRow(getObject(pid, status, name, nr, arg1, arg2, arg3, arg4, arg5, arg6))
         }
-        function onIsTracingChanged(val) {
+        function onIsTracingchanged(val) {
             if(val == 0) {
                 home_btn_start.enabled = true
                 home_btn_start_remote.enabled = true
