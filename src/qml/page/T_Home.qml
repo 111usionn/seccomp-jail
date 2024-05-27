@@ -204,19 +204,20 @@ FluContentPage{
         }
         return 0
     }
-
+    Timer {
+        id: removelater
+        property int targetrow
+        interval: 150
+        running: false
+        onTriggered: {
+            table_view.closeEditor()
+            table_view.removeRow(targetrow)
+            console.log("del row")
+        }
+    }
     Component{
         id:com_option
         Item {
-            Timer {
-                id: removelater
-                interval: 150
-                running: false
-                onTriggered: {
-                    table_view.closeEditor()
-                    table_view.removeRow(row)
-                }
-            }
             FluDropDownButton{
                 anchors.centerIn: parent
                 width: parent.width * 0.8
@@ -233,6 +234,7 @@ FluContentPage{
                             mask += (getmask(orig_data[i], new_data[i]) << i)
                         }
                         controller.getCommand(Number(obj.pid), Number(obj.status), Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, mask, 1, 0, 0)
+                        removelater.targetrow = row
                         removelater.restart()
                     }
                 }
@@ -241,6 +243,7 @@ FluContentPage{
                     onClicked: {
                         var obj = table_view.getRow(row)
                         controller.getCommand(Number(obj.pid), Number(obj.status), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                        removelater.targetrow = row
                         removelater.restart()
                     }
                 }
@@ -256,6 +259,7 @@ FluContentPage{
                             mask += (getmask(orig_data[i], new_data[i]) << i)
                         }
                         controller.getCommand(Number(obj.pid), Number(obj.status), Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, mask, 1, 0, 2)
+                        removelater.targetrow = row
                         removelater.restart()
                     }
                 }
@@ -265,6 +269,7 @@ FluContentPage{
                         var obj = table_view.getRow(row)
                         controller.updateRule(Number(obj.orig_nr), 1)
                         controller.getCommand(Number(obj.pid), Number(obj.status), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                        removelater.targetrow = row
                         removelater.restart()
                     }
                 }

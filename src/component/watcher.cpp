@@ -81,7 +81,7 @@ void Watcher::injector(int pid, int nr, long arg1, long arg2, long arg3, long ar
     if(proactiveInterrupt(pid))return;
     emit processStopped(pid);
     int stat;
-    waitpid(pid, &stat, __WALL | WNOHANG);
+    waitpid(pid, &stat, WNOHANG);
     if(stat >> 8 != (SIGTRAP | (PTRACE_EVENT_STOP<<8)))
     {
         syscall_info tempinfo = {0, argc, nr, arg1, arg2, arg3, arg4, arg5, arg6};
@@ -287,15 +287,14 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                             ptrace(PTRACE_CONT, info.pid, 0, 0);
                         }
                         int status = 0;
-                        waitpid(info.pid, &status, __WALL);
+                        waitpid(info.pid, &status, 0);
                         if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_FORK<<8)))
                         {
                             pid_t new_proc_pid = 0;
                             int new_status;
                             ptrace(PTRACE_GETEVENTMSG, info.pid, 0, &new_proc_pid);
-                            while(!new_proc_pid){1;}//if not wait, PTRACE_SETOPTIONS cant success, it seems like PTRACE_GETEVENTMSG doesnt block until new_proc_pid get vaule
-                            waitpid(new_proc_pid, &new_status, __WALL);
-                            ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
+                            waitpid(new_proc_pid, &new_status, 0);
+                            //ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
                             ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
                             ptrace(PTRACE_SYSCALL, info.pid, 0, 0);
                             emit createProcTree(child_pid);
@@ -305,9 +304,8 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                             pid_t new_proc_pid = 0;
                             int new_status;
                             ptrace(PTRACE_GETEVENTMSG, info.pid, 0, &new_proc_pid);
-                            while(!new_proc_pid){1;}
-                            waitpid(new_proc_pid, &new_status, __WALL);
-                            ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
+                            waitpid(new_proc_pid, &new_status, 0);
+                            //ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
                             ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
                             ptrace(PTRACE_SYSCALL, info.pid, 0, 0);
                             emit createProcTree(child_pid);
@@ -317,16 +315,15 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                             pid_t new_proc_pid = 0;
                             int new_status;
                             ptrace(PTRACE_GETEVENTMSG, info.pid, 0, &new_proc_pid);
-                            while(!new_proc_pid){1;}
-                            waitpid(new_proc_pid, &new_status, __WALL);
-                            ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
+                            waitpid(new_proc_pid, &new_status, 0);
+                            //ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
                             ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
                             ptrace(PTRACE_SYSCALL, info.pid, 0, 0);
                             emit createProcTree(child_pid);
                         }
                         if(isfork)
                         {
-                            waitpid(info.pid, 0, __WALL);
+                            waitpid(info.pid, 0, 0);
                         }
                         long syscallreval = ptrace(PTRACE_PEEKUSER, info.pid, 8 * RAX, 0);
                         QString reval = " returnval: " + QString::number(syscallreval);
@@ -387,6 +384,7 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                 }
                 if(blockSig == SYSMSG_DEAL_LATER)
                 {
+                    qDebug() << "deal later";
                     blockSig = SYSMSG_KEEP_BLOCKING;
                     continue;
                 }
@@ -445,16 +443,15 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                         isfork = 1;
                         ptrace(PTRACE_CONT, notifypid, 0, 0);
                     }
-                    waitpid(notifypid, &status, __WALL);
+                    waitpid(notifypid, &status, 0);
                     if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_FORK<<8)))
                     {
                         pid_t new_proc_pid = 0;
                         int new_status;
                         ptrace(PTRACE_GETEVENTMSG, notifypid, 0, &new_proc_pid);
-                        while(!new_proc_pid){1;}//if not wait, PTRACE_SETOPTIONS cant success, it seems like PTRACE_GETEVENTMSG doesnt block until new_proc_pid get vaule
-                        waitpid(new_proc_pid, &new_status, __WALL);
-                        if(new_status >> 8 == (SIGTRAP | (PTRACE_EVENT_STOP<<8)))qDebug() << "event stop";
-                        ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  PTRACE_O_TRACESECCOMP | PTRACE_O_EXITKILL | PTRACE_O_TRACECLONE | PTRACE_O_TRACEFORK | PTRACE_O_TRACEVFORK | PTRACE_O_TRACEEXEC);
+                        waitpid(new_proc_pid, &new_status, 0);
+                        qDebug() << "parent:" << notifypid << "child:" << new_proc_pid;
+                        //ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
                         ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
                         ptrace(PTRACE_SYSCALL, notifypid, 0, 0);
                         emit createProcTree(child_pid);
@@ -464,9 +461,8 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                         pid_t new_proc_pid = 0;
                         int new_status;
                         ptrace(PTRACE_GETEVENTMSG, notifypid, 0, &new_proc_pid);
-                        while(!new_proc_pid){1;}
-                        waitpid(new_proc_pid, &new_status, __WALL);
-                        ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  PTRACE_O_TRACESECCOMP | PTRACE_O_EXITKILL | PTRACE_O_TRACECLONE | PTRACE_O_TRACEFORK | PTRACE_O_TRACEVFORK | PTRACE_O_TRACEEXEC);
+                        waitpid(new_proc_pid, &new_status, 0);
+                        //ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
                         ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
                         ptrace(PTRACE_SYSCALL, notifypid, 0, 0);
                         emit createProcTree(child_pid);
@@ -476,16 +472,15 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                         pid_t new_proc_pid = 0;
                         int new_status;
                         ptrace(PTRACE_GETEVENTMSG, notifypid, 0, &new_proc_pid);
-                        while(!new_proc_pid){1;}
-                        waitpid(new_proc_pid, &new_status, __WALL);
-                        ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  PTRACE_O_TRACESECCOMP | PTRACE_O_EXITKILL | PTRACE_O_TRACECLONE | PTRACE_O_TRACEFORK | PTRACE_O_TRACEVFORK | PTRACE_O_TRACEEXEC);
+                        waitpid(new_proc_pid, &new_status, 0);
+                        //ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
                         ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
                         ptrace(PTRACE_SYSCALL, notifypid, 0, 0);
                         emit createProcTree(child_pid);
                     }
                     if(isfork)
                     {
-                        waitpid(notifypid, 0, __WALL);
+                        waitpid(notifypid, 0, 0);
                     }
                     long syscallreval = ptrace(PTRACE_PEEKUSER, notifypid, 8 * RAX, 0);
                     QString reval = " returnval: " + QString::number(syscallreval);
@@ -570,6 +565,7 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
             }
             else if(status >> 16 == PTRACE_EVENT_STOP)//group-stop
             {
+                qDebug() << "123";
                 ptrace(PTRACE_LISTEN, notifypid, 0, 0);
             }
 			else if(WIFSTOPPED(status))

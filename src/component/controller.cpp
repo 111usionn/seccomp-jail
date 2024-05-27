@@ -4,7 +4,6 @@ Controller::Controller(QObject *parent)
     : QObject{parent}
 {
     isTracing = 0;
-    for(int i = 0; i < 4; i ++)ruleDisplayFilter[i] = 1;
 }
 
 Controller::~Controller()
@@ -19,17 +18,6 @@ QString Controller::getCurrentJson()
 {
     QJsonObject filteredRules = currentRules;
     QJsonObject::iterator it = filteredRules.begin();
-    while(it != filteredRules.end())
-    {
-        if(!ruleDisplayFilter[it.value().toInt()])
-        {
-            it = filteredRules.erase(it);
-        }
-        else
-        {
-            it++;
-        }
-    }
     QJsonDocument doc(filteredRules);
     QByteArray t = doc.toJson();
     QString str(t);
