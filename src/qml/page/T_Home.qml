@@ -247,9 +247,7 @@ FluContentPage{
                 FluMenuItem{
                     text: qsTr("Pass and add to rules")
                     onClicked: {
-                        console.log(row)
                         var obj = table_view.getRow(row)
-                        console.log(obj.orig_nr)
                         controller.updateRule(Number(obj.orig_nr), 0)
                         var orig_data = [obj.orig_nr, obj.orig_arg1, obj.orig_arg2, obj.orig_arg3, obj.orig_arg4, obj.orig_arg5, obj.orig_arg6]
                         var new_data = [obj.nr, obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6]
@@ -257,7 +255,6 @@ FluContentPage{
                         for(let i=0; i<7; i++) {
                             mask += (getmask(orig_data[i], new_data[i]) << i)
                         }
-                        console.log(mask)
                         controller.getCommand(Number(obj.pid), Number(obj.status), Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, mask, 1, 0, 2)
                         removelater.restart()
                     }
@@ -412,7 +409,6 @@ FluContentPage{
     Connections {
         target: controller
         function onShowSyscall(pid, status, name, nr, arg1, arg2, arg3, arg4, arg5, arg6) {
-            console.log("shown")
             table_view.appendRow(getObject(pid, status, name, nr, arg1, arg2, arg3, arg4, arg5, arg6))
         }
         function onIsTracingchanged(val) {

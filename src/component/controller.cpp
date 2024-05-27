@@ -44,7 +44,6 @@ void Controller::changeRuleDisplayFilter(int rule, bool state)
 
 void Controller::createDefaultRule(int option)
 {
-    qDebug() << "start create default rule";
     QFile file("./default.json");
     QJsonObject table;
     QString temp;
@@ -77,34 +76,6 @@ int Controller::setRule(QString path)
     QString localPath = rule_url.toLocalFile();
     loadRule(localPath);
     return 1;
-    /*if(localPath.isEmpty())//default rule
-    {
-        QJsonObject table;
-        QString temp;
-        for(int i = 0; i <= 453; i++)
-        {
-            temp = QString::number(i);
-            if(!Watcher::seccomp_force_enable_calls(i))
-            {
-                table.insert(temp, JAIL_SYS_CALL_NOTIFY);
-            }
-            else
-            {
-                table.insert(temp, JAIL_SYS_CALL_PASS);
-            }
-        }
-        QJsonDocument doc(table);
-        QByteArray json = doc.toJson();
-        QFile file("./default.json");
-        if(!file.open(QFile::WriteOnly | QFile::Truncate))file.open(QFile::WriteOnly);
-        file.write(json);
-        file.close();
-        loadRule();
-    }
-    else
-    {
-        loadRule(localPath);
-    }*/
 }
 
 void Controller::loadRule(QString path)
@@ -140,7 +111,6 @@ int Controller::updateRule(int n, int option)
     if(Watcher::seccomp_force_enable_calls(n)) return 0;
     if(currentRules.contains(nr))
     {
-        qDebug() << "rule added";
         currentRules[nr] = option;
         emit currentRuleChanged();
         return 1;
@@ -206,7 +176,6 @@ int Controller::startTrace(QString path, QString args)
     {
         return 0;//no rules
     }
-    //setRule(rulePath);
     isTracing = 1;
     emit isTracingchanged(isTracing);
     finishmunmap = checkRule(SCMP_SYS(munmap)) == JAIL_SYS_CALL_PASS_FOREVER ?1:0;
@@ -278,13 +247,9 @@ void Controller::notifySyscall(int pid, int status, seccomp_data data)
         {
         case JAIL_SYS_CALL_PASS:
             stopBlocking(1, SYSMSG_STOP_BLOCKING, 1);
-            //info = QString::number(data.nr) + "(" + findSyscallName(data.nr) + ")";
-            //emit writeLog(pid, info, QString::number(data.args[0]), QString::number(data.args[1]), QString::number(data.args[2]), QString::number(data.args[3]), QString::number(data.args[4]), QString::number(data.args[5]), 1);
             break;
         case JAIL_SYS_CALL_ABORT:
             stopBlocking(0, SYSMSG_STOP_BLOCKING, 1);
-            //info = QString::number(data.nr) + "(" + findSyscallName(data.nr) + ")";
-            //emit writeLog(pid, info, QString::number(data.args[0]), QString::number(data.args[1]), QString::number(data.args[2]), QString::number(data.args[3]), QString::number(data.args[4]), QString::number(data.args[5]), 0);
             break;
         case JAIL_SYS_CALL_NOTIFY:
             sname = findSyscallName(data.nr);
@@ -307,12 +272,6 @@ void Controller::notifyPeekData(int pid, int num, long data)
     emit showPeekData(pid, num, data, qstrtemp);
 }
 
-/*void Controller::stopBlocking(int option, int blockState)
-{
-    watcher->nextMove = option;
-    watcher->blockSig = blockState;
-}*/
-
 void Controller::stopBlocking(int option, int blockState, int arg)
 {
     watcher->nextMove = option;
@@ -327,7 +286,6 @@ void Controller::sendLog(QString log)
 
 void Controller::stopTrace()
 {
-    qDebug() << "stopped";
     isTracing = 0;
     emit isTracingchanged(isTracing);
     watcher->endFlag = 0;

@@ -78,23 +78,18 @@ void Watcher::waiting_for_inject(int pid)
 
 void Watcher::injector(int pid, int nr, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, int argc)
 {
-    qDebug()<< "begin hook";
     if(proactiveInterrupt(pid))return;
     emit processStopped(pid);
-    qDebug() << "hook: stopped";
     int stat;
     waitpid(pid, &stat, __WALL | WNOHANG);
-    qDebug() << "hook: get stat";
     if(stat >> 8 != (SIGTRAP | (PTRACE_EVENT_STOP<<8)))
     {
-        qDebug() << "hook: not in user space";
         syscall_info tempinfo = {0, argc, nr, arg1, arg2, arg3, arg4, arg5, arg6};
         inject_events.insert(pid, tempinfo);
         has_trap.insert(pid, 1);
         //push event
         return;
     }
-    qDebug() << "hook: correct stat";
     char* buf;
     char* end;
     char mapfile[0x100];
@@ -137,7 +132,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
     pid_t child_pid = fork();
     if(child_pid == 0)//child
     {
-        //ptrace(PTRACE_TRACEME, 0, 0, 0);
         setenv("LD_PRELOAD","./libhookhere.so", 1);
         int buffer;
         close(pp[1]);
@@ -153,11 +147,7 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
             cargs[i] = strdup(qbatemp.data());
         }
         cargs[args.size()] = NULL;
-#if 1
         scmp_filter_ctx ctx = seccomp_init(SCMP_ACT_ALLOW);
-        //seccomp_rule_add(ctx, SCMP_ACT_NOTIFY, SCMP_SYS(mkdir), 0);
-        //seccomp_rule_add(ctx, SCMP_ACT_NOTIFY, SCMP_SYS(getpid), 0);
-        //seccomp_attr_set(ctx, SCMP_FLTATR_API_SYSRAWRC, 1);
         for(int i = 0; i <= 453 ; i++)
         {
             if(i != SCMP_SYS(execve))
@@ -186,21 +176,12 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
             }
         }
         seccomp_load(ctx);
-#endif
-        /*int fd = seccomp_notify_fd(ctx);
-
-        write(pp[1], &fd, sizeof(fd));
-        for(int i = 0; i < 500000; i++)
-        {
-            1;
-        }*/
         read(pp[0], &buffer, sizeof(buffer));
         execvp(cpath, cargs);
         return;//not reachable
     }
     else
     {
-        qDebug() << "watcher started";
         close(pp[0]);
         int buffer = 1;
         int ptrace_mask = PTRACE_O_TRACESECCOMP | PTRACE_O_EXITKILL | PTRACE_O_TRACEEXEC;
@@ -224,9 +205,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
         }
         ptrace(PTRACE_SEIZE, child_pid, 0,  ptrace_mask);
         write(pp[1], &buffer, sizeof(buffer));
-        //wait(NULL);
-        //ptrace(PTRACE_SETOPTIONS, child_pid, 0, PTRACE_O_TRACESECCOMP | PTRACE_O_EXITKILL | PTRACE_O_TRACEEXEC);
-        //ptrace(PTRACE_CONT, child_pid, 0, 0);
         while(endFlag)
         {
             QCoreApplication::processEvents();
@@ -312,13 +290,11 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                         waitpid(info.pid, &status, __WALL);
                         if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_FORK<<8)))
                         {
-                            qDebug() << "forked";
                             pid_t new_proc_pid = 0;
                             int new_status;
                             ptrace(PTRACE_GETEVENTMSG, info.pid, 0, &new_proc_pid);
                             while(!new_proc_pid){1;}//if not wait, PTRACE_SETOPTIONS cant success, it seems like PTRACE_GETEVENTMSG doesnt block until new_proc_pid get vaule
                             waitpid(new_proc_pid, &new_status, __WALL);
-                            if(new_status >> 8 == (SIGTRAP | (PTRACE_EVENT_STOP<<8)))qDebug() << "event stop";
                             ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
                             ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
                             ptrace(PTRACE_SYSCALL, info.pid, 0, 0);
@@ -326,7 +302,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                         }
                         else if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_VFORK<<8)))
                         {
-                            qDebug() << "vforked";
                             pid_t new_proc_pid = 0;
                             int new_status;
                             ptrace(PTRACE_GETEVENTMSG, info.pid, 0, &new_proc_pid);
@@ -339,7 +314,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                         }
                         else if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE<<8)))
                         {
-                            qDebug() << "cloned";
                             pid_t new_proc_pid = 0;
                             int new_status;
                             ptrace(PTRACE_GETEVENTMSG, info.pid, 0, &new_proc_pid);
@@ -379,11 +353,9 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                 memset(&data, 0, sizeof(data));
                 memset(&si, 0, sizeof(si));
                 ptrace(PTRACE_GET_SYSCALL_INFO, notifypid, sizeof(si), &si);
-                //qDebug() << "orig_rax:" << ptrace(PTRACE_PEEKUSER, notifypid, 8 * ORIG_RAX, 0);
                 if(status >> 8 != (SIGTRAP | (PTRACE_EVENT_EXEC<<8)))
                 {
                     data.nr = si.seccomp.nr;
-                    //if(data.nr == SCMP_SYS(mmap))qDebug() << "mmap!";
                     data.args[0] = si.seccomp.args[0];
                     data.args[1] = si.seccomp.args[1];
                     data.args[2] = si.seccomp.args[2];
@@ -400,8 +372,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                 {
                     if(blockSig == SYSMSG_PEEK_ADDR)
                     {
-                        //nextMove: reg number
-                        //extraOption: offset
                         for(int i = 0; i <= extraOption; i++)
                         {
                             long result;
@@ -409,7 +379,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                             emit sendPeekData(notifypid, i, result);
                         }
                         blockSig = SYSMSG_KEEP_BLOCKING;
-                        qDebug() << "PEEKED ONCE!";
                     }
                     else if(blockSig == SYSMSG_DEAL_LATER)
                     {
@@ -479,7 +448,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                     waitpid(notifypid, &status, __WALL);
                     if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_FORK<<8)))
                     {
-                        qDebug() << "forked";
                         pid_t new_proc_pid = 0;
                         int new_status;
                         ptrace(PTRACE_GETEVENTMSG, notifypid, 0, &new_proc_pid);
@@ -493,7 +461,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                     }
                     else if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_VFORK<<8)))
                     {
-                        qDebug() << "vforked";
                         pid_t new_proc_pid = 0;
                         int new_status;
                         ptrace(PTRACE_GETEVENTMSG, notifypid, 0, &new_proc_pid);
@@ -506,7 +473,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                     }
                     else if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE<<8)))
                     {
-                        qDebug() << "cloned";
                         pid_t new_proc_pid = 0;
                         int new_status;
                         ptrace(PTRACE_GETEVENTMSG, notifypid, 0, &new_proc_pid);
@@ -531,10 +497,8 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
             }
             else if(WIFSTOPPED(status) && WSTOPSIG(status) == SIGTRAP)//int3
             {
-                qDebug() << "juDge int3";
                 if(orig_codes.contains(notifypid))//trapped
                 {
-                    qDebug() << "set trap at user space";
                     //recover code
                     long rip = ptrace(PTRACE_PEEKUSER, notifypid, 8 * RIP, 0);
                     ptrace(PTRACE_POKEDATA, notifypid, rip - 1, orig_codes.value(notifypid));
@@ -575,9 +539,7 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                     long hook = 0xcc050f;
                     memcpy(&code, &hook, 3);
                     ptrace(PTRACE_POKETEXT, notifypid, tempaddr, code);
-                    qDebug() << "trap done";
                     syscall_info tempinfo = inject_events.value(notifypid);
-                    qDebug() << "trap done" << tempinfo.nr;
                     regs.rax = tempinfo.nr;
                     if(tempinfo.status > 0)regs.rdi = tempinfo.args[0];
                     if(tempinfo.status > 1)regs.rsi = tempinfo.args[1];
@@ -586,21 +548,17 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                     if(tempinfo.status > 4)regs.r8 = tempinfo.args[4];
                     if(tempinfo.status > 5)regs.r9 = tempinfo.args[5];
                     regs.rip = tempaddr;
-                    qDebug() << "trap done";
                     ptrace(PTRACE_SETREGS, notifypid, 0, &regs);
-                    qDebug() << "trap done";
                     ptrace(PTRACE_CONT, notifypid, 0, 0);
                 }
                 else if(notifypid == injectedPid)//instant inject
                 {
-                    qDebug() << "hook done";
                     ptrace(PTRACE_POKETEXT, notifypid, libcAddr, code_bak);
                     ptrace(PTRACE_SETREGS, notifypid, 0, &regs_bak);
                     ptrace(PTRACE_CONT, notifypid, 0, 0);
                 }
                 else if(need_recover.value(notifypid) == 1)
                 {
-                    qDebug() << "recover";
                     if(!settings.enableLDPRELOAD)ptrace(PTRACE_POKETEXT, notifypid, libcAddr, code_bak);
                     user_regs_struct tempregs = orig_regs.value(notifypid);
                     tempregs.rip -= 1;

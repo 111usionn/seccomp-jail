@@ -113,62 +113,62 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="266"/>
+        <location filename="qml/page/T_Home.qml" line="263"/>
         <source>Abort and add to rules</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="275"/>
+        <location filename="qml/page/T_Home.qml" line="272"/>
         <source>More...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="309"/>
+        <location filename="qml/page/T_Home.qml" line="306"/>
         <source>pid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="316"/>
+        <location filename="qml/page/T_Home.qml" line="313"/>
         <source>nr</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="323"/>
+        <location filename="qml/page/T_Home.qml" line="320"/>
         <source>syscall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="330"/>
+        <location filename="qml/page/T_Home.qml" line="327"/>
         <source>arg1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="339"/>
+        <location filename="qml/page/T_Home.qml" line="336"/>
         <source>arg2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="347"/>
+        <location filename="qml/page/T_Home.qml" line="344"/>
         <source>arg3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="355"/>
+        <location filename="qml/page/T_Home.qml" line="352"/>
         <source>arg4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="363"/>
+        <location filename="qml/page/T_Home.qml" line="360"/>
         <source>arg5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="371"/>
+        <location filename="qml/page/T_Home.qml" line="368"/>
         <source>arg6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="379"/>
+        <location filename="qml/page/T_Home.qml" line="376"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
@@ -366,8 +366,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="281"/>
-        <location filename="qml/page/T_Rules.qml" line="327"/>
+        <location filename="qml/page/T_Rules.qml" line="280"/>
+        <location filename="qml/page/T_Rules.qml" line="326"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -387,32 +387,32 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="215"/>
+        <location filename="qml/page/T_Rules.qml" line="214"/>
         <source>Updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="218"/>
+        <location filename="qml/page/T_Rules.qml" line="217"/>
         <source>Failed, this is a force enabled syscall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="255"/>
+        <location filename="qml/page/T_Rules.qml" line="254"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="320"/>
+        <location filename="qml/page/T_Rules.qml" line="319"/>
         <source>nr</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="335"/>
+        <location filename="qml/page/T_Rules.qml" line="334"/>
         <source>status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="342"/>
+        <location filename="qml/page/T_Rules.qml" line="341"/>
         <source>Change to</source>
         <translation type="unfinished"></translation>
     </message>
@@ -430,43 +430,38 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="182"/>
-        <source>Click Time</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="main.qml" line="192"/>
+        <location filename="main.qml" line="117"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="215"/>
-        <location filename="main.qml" line="223"/>
+        <location filename="main.qml" line="138"/>
+        <location filename="main.qml" line="146"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="216"/>
+        <location filename="main.qml" line="139"/>
         <source>Are you sure you want to exit the program?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="217"/>
+        <location filename="main.qml" line="140"/>
         <source>Minimize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="220"/>
+        <location filename="main.qml" line="143"/>
         <source>Friendly Reminder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="220"/>
+        <location filename="main.qml" line="143"/>
         <source>FluentUI is hidden from the tray, click on the tray to activate the window again</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="224"/>
+        <location filename="main.qml" line="147"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>

@@ -82,7 +82,6 @@ FluWindow {
     Connections {
         target: ctrl
         function onShowPeekData(pid, num, data, strData) {
-            //console.log(num, data);
             if(pid == pid_)
             {
                 if(num == 0) {

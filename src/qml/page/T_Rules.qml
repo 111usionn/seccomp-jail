@@ -209,7 +209,6 @@ FluContentPage{
                     text: qsTr("Update")
                     onClicked: {
                         var obj = table_view.getRow(row)
-                        console.log(rule_selecter.currentValue)
                         var reval = controller.updateRule(obj.nr, rule_selecter.currentValue)
                         if(reval == 1) {
                             showSuccess(qsTr("Updated"))
@@ -371,7 +370,6 @@ FluContentPage{
     Connections {
         target: controller
         function onCurrentRuleChanged() {
-            console.log(123)
             json = JSON.parse(controller.getCurrentJson())
             gagination.itemCount = jsonLength(json)
             loadData(gagination.pageCurrent)
