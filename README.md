@@ -133,23 +133,31 @@ pstree(大部分linux发行版应该都有)
 
 ### 页面介绍
 
+#### 总览
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/2672babe-6462-4787-9208-be64c0030212)
+
 #### 主界面
+
 ![image](https://github.com/111usionn/seccomp-jail/assets/163122109/ba36c43a-98d5-49c1-b758-700c2d937b6e)
 
 在此界面启动程序、手动处理系统调用
 
 #### 规则编辑
+
 ![image](https://github.com/111usionn/seccomp-jail/assets/163122109/22781a1c-c56e-4c78-9e81-e38cbd6fb422)
 
 
 在此界面创建、加载、修改、保存规则文件
 
 #### 主动执行
+
 ![image](https://github.com/111usionn/seccomp-jail/assets/163122109/ea25ee29-8af4-4c08-a8bf-d682c1443263)
 
 在此界面上方显示目标程序进程/线程树，下方提供主动执行系统调用的接口
 
 #### 日志
+
 ![image](https://github.com/111usionn/seccomp-jail/assets/163122109/f97670dc-a32a-4b2b-8c66-4fcf9efb01ad)
 
 此界面显示日志，包括自动审批的和用户手动审批的。
