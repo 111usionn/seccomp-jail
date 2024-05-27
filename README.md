@@ -234,7 +234,57 @@ pstree(大部分linux发行版应该都有)
 
 ## 样例测试
 
-...
+### Test1: mkdir test
+
+#### 说明：试图创建一个名为test的文件夹。
+
+#### 规则：
+
+| 系统调用名 | 规则 | 用户操作 | 备注 |
+|:-------|:-------|:-------|:-------|
+| mkdir | notify | 允许 |  |
+| 其他 | allow forever |  |  |
+
+#### 过程：
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/eed36cd0-b6e1-482d-8b9e-b65a138757f5)
+
+成功捕获。
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/0eeb0aff-a459-48d1-bb16-9505100f6a36)
+
+右侧选择More..进入查看详细信息，将第一个参数作为地址查看四个字长的数据，可以发现显示出了文件夹名。
+
+*因为会将读到的数据全部转为字符串，所以后面会有一些无意义/作其他用途的字符。
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/c1e941ed-fa38-4c98-bdaa-4623790344a4)
+
+选择allow允许此系统调用，转到日志界面可以发现此条记录。
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/ad2b0d82-afd4-4522-afd0-c50ec6c17092)
+
+可以发现成功生成了test文件夹。
+
+### Test2: mkdir test1
+
+#### 规则：
+
+| 系统调用名 | 规则 | 用户操作 | 备注 |
+|:-------|:-------|:-------|:-------|
+| mkdir | notify | 拒绝 |  |
+| 其他 | allow forever |  |  |
+
+#### 过程：
+
+前同Test1
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/32122a00-4662-40a2-9824-67ce2a879bd7)
+
+在选择abort禁止执行该系统调用后，转到日志界面可以发现此条记录。
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/a86b4f9f-04d3-40c5-887c-53a601fb817c)
+
+没有生成test1文件夹。
 
 ## 开发过程中遇到的问题
 
