@@ -134,7 +134,7 @@ pstree(大部分linux发行版应该都有)
 ### 页面介绍
 
 #### 主界面
-![image](https://github.com/111usionn/seccomp-jail/assets/163122109/116b584a-1d9c-426e-a803-6e6910e27aaf)
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/ba36c43a-98d5-49c1-b758-700c2d937b6e)
 
 在此界面启动程序、手动处理系统调用
 
