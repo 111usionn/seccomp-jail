@@ -139,7 +139,8 @@ pstree(大部分linux发行版应该都有)
 在此界面启动程序、手动处理系统调用
 
 #### 规则编辑
-![image](https://github.com/111usionn/seccomp-jail/assets/163122109/cfd61963-021b-4344-832b-08e171b1f3dd)
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/22781a1c-c56e-4c78-9e81-e38cbd6fb422)
+
 
 在此界面创建、加载、修改、保存规则文件
 
