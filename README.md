@@ -75,6 +75,16 @@ ptrace触发的暂停事件有很多种，本项目中主要用到了PTRACE_EVEN
 
 每次进程暂停后会发出信息，需要由监控者用waitpid函数接收，如在忽略该信号的情况下恢复该程序的执行，可能会导致监视者无法再收到此进程的消息(在此种情况下，若该进程再次暂停，会因无法通知监视者导致自己僵死)。
 
+#### 如何分辨不同种类的暂停
+
+waitpid函数的定义如下：
+
+pid_t waitpid(pid_t pid, int *_Nullable wstatus, int options);
+
+使用时如：
+
+tracer调用waitpid后，第二个参数处的变量会存有此次暂停的相关信息。通过一些系统自带的宏或者ptrace文档中提供的计算方式即可分辨暂停的类别。
+
 ### SECCOMP
 
 seccomp是Linux内核提供的一种安全机制，用于在用户态应用程序执行系统调用时进行过滤和限制。其原理是基于对系统调用号的过滤和限制，以及对系统调用参数的校验。当一个应用程序启动时，它可以使用seccomp机制来加载一个过滤器，该过滤器指定了允许或禁止执行的系统调用。
@@ -571,7 +581,7 @@ int main()
 
 ![image](https://github.com/111usionn/seccomp-jail/assets/163122109/19c5e9ae-f038-4ba3-92eb-4d8e8783c284)
 
-在主动执行界面输入39，点击execute执行该系统调用那个。
+在主动执行界面输入39，点击execute执行该系统调用。
 
 ![image](https://github.com/111usionn/seccomp-jail/assets/163122109/dfe8dec9-5a9f-4691-9916-e2060b8af709)
 
