@@ -209,92 +209,92 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="25"/>
+        <location filename="qml/page/T_Proc.qml" line="36"/>
         <source>syscall number and argc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="31"/>
+        <location filename="qml/page/T_Proc.qml" line="42"/>
         <source>nr</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="51"/>
+        <location filename="qml/page/T_Proc.qml" line="62"/>
         <source>Execute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="58"/>
+        <location filename="qml/page/T_Proc.qml" line="69"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="66"/>
+        <location filename="qml/page/T_Proc.qml" line="77"/>
         <source>arg1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="71"/>
+        <location filename="qml/page/T_Proc.qml" line="82"/>
         <source>arg1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="75"/>
+        <location filename="qml/page/T_Proc.qml" line="86"/>
         <source>arg2:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="80"/>
+        <location filename="qml/page/T_Proc.qml" line="91"/>
         <source>arg2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="84"/>
+        <location filename="qml/page/T_Proc.qml" line="95"/>
         <source>arg3:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="89"/>
+        <location filename="qml/page/T_Proc.qml" line="100"/>
         <source>arg3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="95"/>
+        <location filename="qml/page/T_Proc.qml" line="106"/>
         <source>arg4:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="100"/>
+        <location filename="qml/page/T_Proc.qml" line="111"/>
         <source>arg4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="104"/>
+        <location filename="qml/page/T_Proc.qml" line="115"/>
         <source>arg5:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="109"/>
+        <location filename="qml/page/T_Proc.qml" line="120"/>
         <source>arg5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="113"/>
+        <location filename="qml/page/T_Proc.qml" line="124"/>
         <source>arg6:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="118"/>
+        <location filename="qml/page/T_Proc.qml" line="129"/>
         <source>arg6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="127"/>
+        <location filename="qml/page/T_Proc.qml" line="138"/>
         <source>Pid: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Proc.qml" line="206"/>
+        <location filename="qml/page/T_Proc.qml" line="217"/>
         <source>Create</source>
         <translation type="unfinished"></translation>
     </message>

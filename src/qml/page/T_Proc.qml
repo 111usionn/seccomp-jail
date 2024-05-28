@@ -10,8 +10,19 @@ FluScrollablePage{
     title: qsTr("Trace")
 
     function getAllNumbers(str) {
-      const regex = /\d+/g;
-      return str.match(regex);
+        const smallRegex = /\((\d+)\)/g;
+        const largeRegex = /\{(\d+)\}/g;
+        const numbersS = [];
+        const numbersL = [];
+        let match;
+        while ((match = smallRegex.exec(str)) !== null) {
+          numbersS.push(match[1]);
+        }
+        let braceMatch;
+        while ((braceMatch = largeRegex.exec(str)) !== null) {
+          numbersL.push(braceMatch[1]);
+        }
+        return numbersS.concat(numbersL);
     }
 
     Component{

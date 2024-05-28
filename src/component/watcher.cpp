@@ -81,7 +81,7 @@ void Watcher::injector(int pid, int nr, long arg1, long arg2, long arg3, long ar
     if(proactiveInterrupt(pid))return;
     emit processStopped(pid);
     int stat;
-    waitpid(pid, &stat, WNOHANG);
+    waitpid(pid, &stat, 0);
     if(stat >> 8 != (SIGTRAP | (PTRACE_EVENT_STOP<<8)))
     {
         syscall_info tempinfo = {0, argc, nr, arg1, arg2, arg3, arg4, arg5, arg6};
