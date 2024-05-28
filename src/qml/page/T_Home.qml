@@ -242,7 +242,7 @@ FluContentPage{
                     text: qsTr("Abort")
                     onClicked: {
                         var obj = table_view.getRow(row)
-                        controller.getCommand(Number(obj.pid), Number(obj.status), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                        controller.getCommand(Number(obj.pid), Number(obj.status), Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, 0, 0, 0, 0)
                         removelater.targetrow = row
                         removelater.restart()
                     }
@@ -268,7 +268,7 @@ FluContentPage{
                     onClicked: {
                         var obj = table_view.getRow(row)
                         controller.updateRule(Number(obj.orig_nr), 1)
-                        controller.getCommand(Number(obj.pid), Number(obj.status), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                        controller.getCommand(Number(obj.pid), Number(obj.status),  Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, 0, 0, 0, 0)
                         removelater.targetrow = row
                         removelater.restart()
                     }
@@ -310,16 +310,16 @@ FluContentPage{
             {
                 title: qsTr("pid"),
                 dataIndex: 'pid',
-                width:100,
-                minimumWidth:100,
-                maximumWidth:100
+                width:70,
+                minimumWidth:70,
+                maximumWidth:70
             },
             {
                 title: qsTr("nr"),
                 dataIndex: 'nr',
-                width:50,
-                minimumWidth:50,
-                maximumWidth:50
+                width:70,
+                minimumWidth:70,
+                maximumWidth:70
             },
             {
                 title: qsTr("syscall"),

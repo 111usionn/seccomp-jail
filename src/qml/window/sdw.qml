@@ -74,10 +74,10 @@ FluWindow {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: frame1.bottom
+        anchors.bottom: parent.bottom
         anchors.margins: 5
         disableColor: FluTheme.dark ?  Qt.rgba(255/255,255/255,255/255,1) : Qt.rgba(27/255,27/255,27/255,1)
         disabled: true
-        anchors.fill: parent
     }
     Connections {
         target: ctrl
