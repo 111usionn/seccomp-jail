@@ -27,7 +27,7 @@ public slots:
     void createPuppet(const QString path, QStringList args, QJsonObject r) __attribute__((optimize("-O0")));
     int proactiveInterrupt(int pid);
     void proactiveRestart(int pid);
-    void injector(int pid, int nr, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, int argc);
+    void injector(int pid, int nr, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, int argc) __attribute__((optimize("-O0")));
     void dealNow(int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption);
 private:
     unsigned long set_trap(int pid, int option, unsigned long addr);

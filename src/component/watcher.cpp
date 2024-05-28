@@ -80,8 +80,12 @@ void Watcher::injector(int pid, int nr, long arg1, long arg2, long arg3, long ar
 {
     if(proactiveInterrupt(pid))return;
     emit processStopped(pid);
-    int stat;
-    waitpid(pid, &stat, 0);
+    int stat = 0;
+    for(int i = 0; i < 1000 ; i++)
+    {
+        waitpid(pid, &stat, WNOHANG);
+        if(stat)break;
+    }
     if(stat >> 8 != (SIGTRAP | (PTRACE_EVENT_STOP<<8)))
     {
         syscall_info tempinfo = {0, argc, nr, arg1, arg2, arg3, arg4, arg5, arg6};
@@ -565,7 +569,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
             }
             else if(status >> 16 == PTRACE_EVENT_STOP)//group-stop
             {
-                qDebug() << "123";
                 ptrace(PTRACE_LISTEN, notifypid, 0, 0);
             }
 			else if(WIFSTOPPED(status))
