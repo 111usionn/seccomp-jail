@@ -352,19 +352,19 @@ int main()
 
 将getpid的规则设为allow后启动程序。
 
-# 待补图
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/28d6e2b3-c929-496c-944f-1205ef5fc9e4)
 
 查看日志，发现系统正在自动通过getpid系统调用。
 
-# 待补图
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/7f7acb9d-89b7-4c1a-8346-02efbdbeb11e)
 
 修改规则为abort后，发现系统改为自动拒绝该系统调用。
 
-# 待补图
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/dd347a53-a9ba-4416-ad45-57e5f64bf66a)
 
 修改规则为notify后，系统调用信息在主界面等待用户处理。
 
-# 待补图
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/543c8921-eb28-481b-98b7-941bf413bd7f)
 
 选择允许并添加规则后，系统再次开始自动通过该调用。
 
