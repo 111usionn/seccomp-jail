@@ -537,7 +537,7 @@ int main()
 
 在日志界面可以看到正确追踪了各个进程的系统调用。
 
-### Test7: 用户态主动执行系统调用测试
+### Test7: 主动执行系统调用测试
 
 #### 说明：
 
@@ -565,7 +565,21 @@ int main()
 
 #### 过程：
 
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/4e0bc8a2-10c6-4a67-8163-76a757a79d04)
 
+启动程序后，进入死循环，没有任何系统调用。
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/19c5e9ae-f038-4ba3-92eb-4d8e8783c284)
+
+在主动执行界面输入39，点击execute执行该系统调用那个。
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/dfe8dec9-5a9f-4691-9916-e2060b8af709)
+
+转到日志界面，发现出现了getpid的信息。
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/c2037251-c6a7-407f-832b-91b0b022e009)
+
+多次点击execute，发现日志界面出现多个getpid信息，说明主动执行系统调用后，正常恢复了上下文，程序仍在死循环内正常运行。
 
 ## 开发过程中遇到的问题
 
