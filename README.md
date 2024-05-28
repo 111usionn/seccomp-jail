@@ -268,6 +268,14 @@ pstree(大部分linux发行版应该都有)
 此界面会显示系统调用日志，除两条永久规则的系统调用外，用户手动、系统自动审批的系统调用和主动执行的系统调用都会在此显示，可以点击右侧clear清除条目或copy复制该条目的文本。
 日志内容包括日期时间，进程号，系统调用号和调用名，六个参数，采取的操作，返回值。
 
+### <a name=zysx>注意事项</a>
+
+1. 对clone、fork、vfork三个系统调用而言，将他们的规则设为allow forever将使seccomp-jail不追踪他们创建的子进程。
+
+2. 在测试环境中(deepinV23 x86_64 内核版本 6.1.32)，在调用clone()、fork()、vfork()时，seccomp会将其都归为clone系统调用，但ptrace可以检出三种不同系统调用。
+结合第一条，例如：若要追踪fork及子进程，建议(或者必须)将clone和fork两条规则全部打开。clone规则影响实际的行为，fork规则只要不置于allow forever或abort forever即可。
+视系统或内核的不同，情况可能会有变化，但将三者保持为同一规则总是没错的。
+
 ## 样例测试
 
 ### Test1: mkdir test
@@ -385,6 +393,64 @@ int main()
 | 系统调用名 | 规则 | 用户操作 | 备注 |
 |:-------|:-------|:-------|:-------|
 | getpid | notify | 允许 | 更改系统调用号为getuid对应的系统调用号(102) |
+| 其他 | allow forever |  |  |
+
+#### 过程：
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/9bdf5f88-810e-467e-9f63-6e0301f7165a)
+
+先正常通过几次，程序正常工作。
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/bd2aabb2-3bcc-4db5-aee4-8765bc08729d)
+
+在主界面双击系统调用号，修改为102，接着允许该调用。
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/f10d822f-ce07-4567-ab68-83e44976a0db)
+
+检查日志界面，发现成功将getpid调用改为getuid调用。
+
+*开发环境使用了root用户，故返回值为0，实际使用时软件并不需要root权限。在对应视频中使用普通用户演示。
+
+### Test5: 多进程程序
+
+#### 说明：
+
+程序分为两个进程，父进程死循环执行getuid，子进程死循环执行getpid。
+
+#### 目标程序主要源码：
+
+```
+int main()
+{
+    pid_t pid = fork();
+    if(pid == 0)//child
+    {
+        while(1)
+        {
+            getpid();
+            sleep(1);
+        }
+    }
+    else
+    {
+        while(1)
+        {
+            getuid();
+            sleep(1);
+        }
+    }
+}
+```
+
+#### 规则：
+
+| 系统调用名 | 规则 | 用户操作 | 备注 |
+|:-------|:-------|:-------|:-------|
+| getpid | notify | 任意 |  |
+| getuid | notify | 任意 |  |
+| clone | allow |  | 见[注意事项](#zysx) |
+| fork | allow |  | 见[注意事项](#zysx) |
+| vfork | allow |  | 见[注意事项](#zysx) |
 | 其他 | allow forever |  |  |
 
 ## 开发过程中遇到的问题
