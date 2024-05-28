@@ -61,7 +61,15 @@ ptrace是linux下一个强大的系统调用，可以通过它来调试其他进
 
 ptrace可以大致分为两种：traceme(attach其实是令目标进程执行traceme后进行追踪，属于同一种)和seize两种, 使用seize模式附加到目标进程时不会停止目标进程，只有在触发了预先设置的事件时才会停止。
 且seize模式下的api比较友好。一开始使用attach模式，但后来因为上述原因换用seize模式。
-ptrace触发的暂停事件有很多种，本项目中主要用到了PTRACE_EVENT_SECCOMP和Syscall_stops两种，两种暂停的顺序如下
+ptrace触发的暂停事件有很多种，本项目中主要用到了PTRACE_EVENT_SECCOMP和Syscall_stops两种，对于clone, fork, vfork三个系统调用，
+还需考虑PTRACE_EVENT_CLONE/FORK/VFORK暂停的情况，经测试，几种暂停的顺序如下。
+
+![stops](https://github.com/111usionn/seccomp-jail/assets/163122109/fa948f70-49e8-4464-8969-08ddfc48e7ba)
+
+其中，Syscall-stops由PTRACE_SYSCALL触发，tracee在用户态时使用该指令会使其停在下个系统调用入口，在进入系统调用后使用则会使其停在该系统调用的出口。
+
+对于clone, fork, vfork三个较特殊的系统调用，在设置了PTRACE_O_TRACECLONE/TRACEFORK/TRACEVFORK后，会在如图所示的时机触发PTRACE_EVENT_CLONE/FORK/VFORK暂停，
+此时系统调用已经执行，父进程被暂停，以便tracer可以获取子进程的PID，刚创建好的子进程被立刻暂停并自动被tracer追踪。这样的机制可以防止tracee的子进程脱离tracer控制。
 
 每次进程暂停后会发出信息，需要由监控者用waitpid函数接收，如在忽略该信号的情况下恢复该程序的执行，可能会导致监视者无法再收到此进程的消息(在此种情况下，若该进程再次暂停，会因无法通知监视者导致自己僵死)。
 
@@ -84,9 +92,10 @@ seccomp有三种模式：
 
 在bpf模式的基础上，若将规则设定为notify，即可将系统调用是否执行的决定权交由另一个进程处理，提供更强的灵活性。
 
-#### linux下的进（线）程
+### linux下的进（线）程
 
 linux下的线程其实是“轻量级”进程，在内核中都用task_struct的结构表示。故ptrace和seccomp对进程和线程的行为大致是相同的。
+且二者都会在执行exec(进程替换)，clone一族(产生子进程)两种操作时保持自己对新进程的控制。
 
 ### 软件工作流程
 
@@ -104,7 +113,26 @@ linux下的线程其实是“轻量级”进程，在内核中都用task_struct�
 
 直接与目标程序交互，目标程序的实际控制者，接受controller的指令决定下一步操作。由于需要轮询进入暂停状态的进程，使用死循环。
 
-此处缺图若干
+#### 软件工作流程总图
+
+![general](https://github.com/111usionn/seccomp-jail/assets/163122109/9e63b076-3aee-4633-ba28-b316abb6e7e4)
+
+#### watcher工作流程图
+
+![watcher](https://github.com/111usionn/seccomp-jail/assets/163122109/a0c56e7c-30dc-4556-b6ec-e311a73a6dfe)
+
+#### 主动执行系统调用流程图
+
+![injection](https://github.com/111usionn/seccomp-jail/assets/163122109/c6d660f2-595f-4b01-80d5-d9ee2b34af6e)
+
+#### 注入原理图
+
+*在tracer采用ptrace的seize模式附加到tracee之后，tracer可以使用PRACE_INTERRUPT单方面暂停tracee，
+同时可以根据返回的信息判断tracee在暂停时的工作状态。此图为tracee暂停时工作在用户态的情况。若为其他情况，
+则需要额外在tracee代码段中设置一个int3断点，待进程返回用户态执行到该断点后，再由tracer捕获并开始下列流程。
+
+![injection2](https://github.com/111usionn/seccomp-jail/assets/163122109/2b2496fa-0703-4f1a-a9e8-9e1fba90d722)
+
 
 ## 代码目录索引
 
@@ -128,6 +156,8 @@ linux下的线程其实是“轻量级”进程，在内核中都用task_struct�
 依赖：
 
 [前端框架 QML FluentUI by zhuzichu](https://github.com/zhuzichu520/FluentUI)
+
+[libseccomp](https://github.com/seccomp/libseccomp)
 
 pstree(大部分linux发行版应该都有)
 
@@ -372,3 +402,24 @@ int main()
 &#9744;设置页面，能够调整一些参数；关于页面，显示项目相关信息
 
 &#9744;美化日志界面
+
+## 参考资料
+
+### [ptrace](https://man7.org/linux/man-pages/man2/ptrace.2.html)
+
+### [seccomp](https://man7.org/linux/man-pages/man2/seccomp.2.html)
+
+### [waitpid](https://man7.org/linux/man-pages/man2/waitpid.2.html)
+
+### [libseccomp](https://github.com/seccomp/libseccomp)
+
+为seccomp提供了更易用，可读性更高的api。项目贡献者Paul Moore先生也非常友善，
+多次耐心解答我的疑问。
+
+### [QML FluentUI](https://github.com/zhuzichu520/FluentUI)
+
+基于QML实现，非常美观，功能强大的控件库。
+
+### [Stack Overflow](https://stackoverflow.com)
+
+许多邪门问题在上面找到了答案
