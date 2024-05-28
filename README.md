@@ -411,7 +411,7 @@ int main()
 
 *开发环境使用了root用户，故返回值为0，实际使用时软件并不需要root权限。在对应视频中使用普通用户演示。
 
-### Test5: 多进程程序
+### Test5: 多进程程序1
 
 #### 说明：
 
@@ -453,6 +453,120 @@ int main()
 | vfork | allow |  | 见[注意事项](#zysx) |
 | 其他 | allow forever |  |  |
 
+#### 过程：
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/81ffe93b-373a-448a-97cd-fe2c943472ec)
+
+启动程序，发现正确监控了父子进程各自的系统调用
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/a0fb4e66-a1a9-426d-a936-fe2543665131)
+
+任意通过/拒绝各进程的系统调用后，查看日志，可以发现各进程行为正常。
+
+### Test6: 多进程程序2
+
+#### 说明：
+
+子进程再创建子进程，观察运行情况
+
+#### 目标程序主要源码：
+
+```
+int main()
+{
+    int pid = fork();
+    if(pid == 0)
+    {
+        int pid1 = fork();
+        if(pid1 == 0)
+        {
+            getpid();
+            while(1)sleep(1);
+        }
+        else
+        {
+            int pid2 = fork();
+            if(pid2 == 0)
+            {
+                getpid();
+                while(1)sleep(1);
+            }
+            else
+            {
+                getpid();
+                while(1)sleep(1);
+            }
+        }
+    }
+    else
+    {
+        int pid3 = fork();
+        if(pid3 == 0)
+        {
+            getpid();
+            while(1)sleep(1);
+        }
+        else
+        {
+            getpid();
+            while(1)sleep(1);
+        }
+    }
+    return 0;
+}
+```
+
+#### 规则：
+
+| 系统调用名 | 规则 | 用户操作 | 备注 |
+|:-------|:-------|:-------|:-------|
+| getpid | allow |  |  |
+| clone | allow |  | 见[注意事项](#zysx) |
+| fork | allow |  | 见[注意事项](#zysx) |
+| vfork | allow |  | 见[注意事项](#zysx) |
+| clock_nanosleep | abort forever |  | 见[目前已知问题](#issues) |
+| 其他 | allow forever |  |  |
+
+#### 过程：
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/899a1a30-94a7-45ca-aa7b-75159f30b563)
+
+启动程序，可以看到进程结构。
+
+![image](https://github.com/111usionn/seccomp-jail/assets/163122109/4a35fbf4-a0bc-4e52-bd56-e38262a4471b)
+
+在日志界面可以看到正确追踪了各个进程的系统调用。
+
+### Test7: 用户态主动执行系统调用测试
+
+#### 说明：
+
+在目标程序运行在用户态时，插入一个系统调用
+
+#### 目标程序主要源代码：
+
+```
+int main()
+{
+    int a;
+    while(1)
+    {
+        a = !a;
+    }
+}
+```
+
+#### 规则：
+
+| 系统调用名 | 规则 | 用户操作 | 备注 |
+|:-------|:-------|:-------|:-------|
+| getpid | allow |  |  |
+| 其他 | allow forever |  |  |
+
+#### 过程：
+
+
+
 ## 开发过程中遇到的问题
 
 ### seccomp的功能限制
@@ -468,13 +582,13 @@ int main()
 究其原因，是因为在操作进程之前的各种加锁操作在自己的内核模块中没有实现。再继续往这个方向走下去，有些南辕北辙了，故放弃。
 不过在探索的过程中，也学到了诸如编译内核模块、劫持系统调用、如何寻找并使用内核没有导出的符号（函数）等等很有价值的内容。
 
-## 目前已知问题
+## <a name=issues>目前已知问题</a>
 
 目标程序退出后，前端界面的重置没有做好。
 
 小部分按钮按下后给用户的反馈不明确。
 
-如果在fork后主进程立刻sleep可能导致捕获不到子进程。
+如果子进程再次fork后并立刻sleep可能导致捕获不到子进程的子进程。
 
 ## 未来扩展功能
 
