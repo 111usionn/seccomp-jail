@@ -92,7 +92,7 @@
 
 *因视频与文档不是同时制作，故同个测试在文档和视频中的PID和参数等可能会不同。
 
-video：[度盘](https://还没录好.com)
+video：[度盘](https://pan.baidu.com/s/16npV8zrsYLgGn2a2oaQbHw?pwd=1c1s)
 
 ## 原理介绍
 
