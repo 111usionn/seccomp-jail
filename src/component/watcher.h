@@ -2,6 +2,7 @@
 #define WATCHER_H
 
 #include <QObject>
+#include <signal.h>
 #include "global.h"
 class Watcher : public QObject
 {

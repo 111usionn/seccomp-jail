@@ -80,13 +80,29 @@ void Watcher::injector(int pid, int nr, long arg1, long arg2, long arg3, long ar
 {
     if(proactiveInterrupt(pid))return;
     emit processStopped(pid);
-    int stat = 0;
+    siginfo_t stat;
     for(int i = 0; i < 1000 ; i++)
     {
-        waitpid(pid, &stat, WNOHANG);
-        if(stat)break;
+        memset(&stat, 0, sizeof(stat));
+        waitid(P_PID, pid, &stat, WNOHANG | WNOWAIT);
+        if(stat.si_status != 0)
+        {
+            if(stat.si_status >> 8 == (SIGTRAP | (PTRACE_EVENT_STOP<<8)))
+            {
+                waitpid(pid, 0, 0);
+                break;
+            }
+            else
+            {
+                syscall_info tempinfo = {0, argc, nr, arg1, arg2, arg3, arg4, arg5, arg6};
+                inject_events.insert(pid, tempinfo);
+                has_trap.insert(pid, 1);
+                //push event
+                return;
+            }
+        }
     }
-    if(stat >> 8 != (SIGTRAP | (PTRACE_EVENT_STOP<<8)))
+    if(!stat.si_status)
     {
         syscall_info tempinfo = {0, argc, nr, arg1, arg2, arg3, arg4, arg5, arg6};
         inject_events.insert(pid, tempinfo);
