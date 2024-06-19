@@ -78,18 +78,18 @@ void Controller::loadRule(QString path)
     emit currentRuleChanged();
 }
 
-int Controller::checkRule(int n)
+QJsonArray Controller::checkRule(int n)
 {
     QString key;
     key = QString::number(n);
     if(currentRules.contains(key))
     {
         QJsonValue val = currentRules.value(key);
-        return val.toInt();
+        return val.toArray();
     }
     else
     {
-        return JAIL_SYS_CALL_ABORT_FOREVER;
+        return QJsonArray({JAIL_SYS_CALL_ABORT_FOREVER});
     }
 }
 
@@ -166,7 +166,7 @@ int Controller::startTrace(QString path, QString args)
     }
     isTracing = 1;
     emit isTracingchanged(isTracing);
-    finishmunmap = checkRule(SCMP_SYS(munmap)) == JAIL_SYS_CALL_PASS_FOREVER ?1:0;
+    finishmunmap = checkRule(SCMP_SYS(munmap))[0].toInt() == JAIL_SYS_CALL_PASS_FOREVER ?1:0;
     thread = new QThread;
     watcher = new Watcher;
     watcher->moveToThread(thread);
@@ -218,7 +218,8 @@ void Controller::getCommand(int pid, int status, int nr, QString arg1, QString a
     emit pushEvent(pid, status, nr, arg1, arg2, arg3, arg4, arg5, arg6, mask, nextMove, blockSig, extraOption);
 }
 
-void Controller::notifySyscall(int pid, int status, seccomp_data data)
+
+void Controller::notifySyscall(int pid, int status, seccomp_data data, QString darg[6])
 {
     QString sname;
     if(!finishmunmap)
@@ -231,7 +232,9 @@ void Controller::notifySyscall(int pid, int status, seccomp_data data)
     }
     else
     {
-        switch(checkRule(data.nr))
+        QJsonArray ja = checkRule(data.nr);
+        int resp_type = ja[0].toInt();
+        switch(resp_type)
         {
         case JAIL_SYS_CALL_PASS:
             stopBlocking(1, SYSMSG_STOP_BLOCKING, 1);
@@ -247,6 +250,35 @@ void Controller::notifySyscall(int pid, int status, seccomp_data data)
         case JAIL_SYS_CALL_PASS_FOREVER:
             stopBlocking(2, SYSMSG_STOP_BLOCKING, 0);
             break;
+        case JAIL_SYS_CALL_CUSTOM:
+            QProcess script;
+            QString command;
+            command += "SJ_PID=" + QString::number(pid);
+            for(int i = 0; i < 6; i++)
+            {
+                command += " SJ_ARG" + QString::number(i+1) + "=" + QString::number(data.args[i]);
+            }
+            script.start("bash");
+            script.waitForStarted();
+            QByteArray qba = (command + "\n").toUtf8();
+            script.write(qba.data());
+            for(int i = 0; i < 6; i++)
+            {
+                command = "SJ_DARG" + QString::number(i+1) + "=$(cat <<EOF";
+                qba = (command + "\n").toUtf8();
+                script.write(qba.data());
+                qba = (darg[i] + "\n").toUtf8();
+                script.write(qba.data());
+                script.write("EOF\n");
+                script.write(")\n");
+            }
+            command = ja[1].toString();
+            qba = command.toUtf8();
+            qba = QByteArray::fromBase64(qba);
+            qba.append('\n');
+            script.write(qba.data());
+            script.waitForFinished();
+            resp_type = script.exitCode();
         }
     }
 }

@@ -25,14 +25,14 @@ signals:
 public slots:
     int startTrace(QString path, QString args);
     void stopTrace();
-    void notifySyscall(int pid, int status, seccomp_data data);
+    void notifySyscall(int pid, int status, seccomp_data data, QString darg[6]);
     //void stopBlocking(int option, int blockState);
     void stopBlocking(int option, int blockState, int arg);
     void sendLog(QString log);
     int setRule(QString path);
     void loadRule(QString path);
     void createDefaultRule(int option);
-    int checkRule(int n);
+    QJsonArray checkRule(int n);
     int updateRule(int n, int option);
     void saveCurrentRule(QString saveAs = "");
     void notifyPeekData(int pid, int num, long data);

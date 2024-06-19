@@ -8,6 +8,7 @@
 #define JAIL_SYS_CALL_NOTIFY 2
 #define JAIL_SYS_CALL_PASS_FOREVER 3
 #define JAIL_SYS_CALL_ABORT_FOREVER 4
+#define JAIL_SYS_CALL_CUSTOM 5
 #define SYSMSG_STOP_BLOCKING 0
 #define SYSMSG_KEEP_BLOCKING 1
 #define SYSMSG_DEAL_LATER 2
@@ -35,6 +36,7 @@
 #include <unistd.h>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QFile>

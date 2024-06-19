@@ -15,6 +15,7 @@ Watcher::Watcher(QObject *parent)
     endFlag = 1;
     blockSig = 1;
     addroffset = 0;
+    deref_offset = 1;
     settings.enableLDPRELOAD = 1;
 }
 
@@ -384,12 +385,21 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                 {
                     data.nr = SCMP_SYS(execve);
                 }
-                emit catchSyscall(notifypid, status, data);
+                QString darg[6];
+                for(int i = 0; i <= 5; i++)
+                {
+                    for(int j = 0; j < deref_offset; j++)
+                    {
+                        long result = ptrace(PTRACE_PEEKDATA, notifypid, data.args[i] + j * 8, NULL);
+                        darg[i] += QString::number(result, 16).toUpper();
+                    }
+                }
+                emit catchSyscall(notifypid, status, data, darg);
                 while(blockSig)
                 {
                     if(blockSig == SYSMSG_PEEK_ADDR)
                     {
-                        for(int i = 0; i <= extraOption; i++)
+                        for(int i = 0; i < extraOption; i++)
                         {
                             long result;
                             result = ptrace(PTRACE_PEEKDATA, notifypid, data.args[nextMove] + i * 8, NULL);

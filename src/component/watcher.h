@@ -16,7 +16,7 @@ public:
     int extraOption;
     static bool seccomp_force_enable_calls(int i);
 signals:
-    void catchSyscall(int pid, int status, seccomp_data a);
+    void catchSyscall(int pid, int status, seccomp_data a, QString darg[6]);
     void sendPeekData(int pid, int num, long data);
     void writeLog(QString log);
     void sendStop();
@@ -46,6 +46,7 @@ private:
     void waiting_for_inject(int pid);
     int addroffset;
     int gethookoffset();
+    int deref_offset;
 };
 
 #endif // WATCHER_H
