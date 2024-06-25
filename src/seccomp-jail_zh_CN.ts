@@ -307,112 +307,129 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="52"/>
+        <location filename="qml/page/T_Rules.qml" line="54"/>
         <source>Create New Rules</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="53"/>
+        <location filename="qml/page/T_Rules.qml" line="55"/>
         <source>Please select a default rule</source>
-        <oldsource>Data is loading, please wait...</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="54"/>
+        <location filename="qml/page/T_Rules.qml" line="56"/>
+        <location filename="qml/page/T_Rules.qml" line="205"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="78"/>
+        <location filename="qml/page/T_Rules.qml" line="80"/>
+        <location filename="qml/page/T_Rules.qml" line="241"/>
         <source>Canceled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="80"/>
+        <location filename="qml/page/T_Rules.qml" line="82"/>
         <source>Create</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="83"/>
+        <location filename="qml/page/T_Rules.qml" line="85"/>
         <source>Created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="104"/>
+        <location filename="qml/page/T_Rules.qml" line="106"/>
         <source>Select rule</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="118"/>
-        <source>Load rule</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/page/T_Rules.qml" line="134"/>
-        <source>Create rule</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/page/T_Rules.qml" line="107"/>
-        <location filename="qml/page/T_Rules.qml" line="142"/>
+        <location filename="qml/page/T_Rules.qml" line="109"/>
+        <location filename="qml/page/T_Rules.qml" line="144"/>
+        <location filename="qml/page/T_Rules.qml" line="243"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="152"/>
-        <location filename="qml/page/T_Rules.qml" line="155"/>
+        <location filename="qml/page/T_Rules.qml" line="120"/>
+        <source>Load rule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/page/T_Rules.qml" line="136"/>
+        <source>Create rule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/page/T_Rules.qml" line="154"/>
+        <location filename="qml/page/T_Rules.qml" line="157"/>
         <source>Save As</source>
-        <oldsource>Save as</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="280"/>
-        <location filename="qml/page/T_Rules.qml" line="326"/>
-        <source>Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/page/T_Rules.qml" line="178"/>
+        <location filename="qml/page/T_Rules.qml" line="180"/>
         <source>&lt;Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="179"/>
+        <location filename="qml/page/T_Rules.qml" line="181"/>
         <source>Next&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="209"/>
-        <source>Update</source>
+        <location filename="qml/page/T_Rules.qml" line="203"/>
+        <source>Custom rule</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="214"/>
-        <source>Updated</source>
+        <location filename="qml/page/T_Rules.qml" line="204"/>
+        <source>Edit your bash script here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="217"/>
+        <location filename="qml/page/T_Rules.qml" line="248"/>
+        <source>Script saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/page/T_Rules.qml" line="251"/>
+        <location filename="qml/page/T_Rules.qml" line="277"/>
         <source>Failed, this is a force enabled syscall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="254"/>
+        <location filename="qml/page/T_Rules.qml" line="268"/>
+        <source>Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/page/T_Rules.qml" line="274"/>
+        <source>Updated</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/page/T_Rules.qml" line="320"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="319"/>
+        <location filename="qml/page/T_Rules.qml" line="346"/>
+        <location filename="qml/page/T_Rules.qml" line="392"/>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/page/T_Rules.qml" line="385"/>
         <source>nr</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="334"/>
+        <location filename="qml/page/T_Rules.qml" line="400"/>
         <source>status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="341"/>
+        <location filename="qml/page/T_Rules.qml" line="407"/>
         <source>Change to</source>
         <translation type="unfinished"></translation>
     </message>

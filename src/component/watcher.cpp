@@ -180,7 +180,15 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                 if(r.contains(key))
                 {
                     QJsonValue val = r.value(key);
-                    v = val.toInt();
+                    if(val.isArray())
+                    {
+                        QJsonArray arr = val.toArray();
+                        v = arr[0].toInt();
+                    }
+                    else
+                    {
+                        v = val.toInt();
+                    }
                 }
                 else
                 {
@@ -217,7 +225,15 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
             if(r.contains(key))
             {
                 QJsonValue val = r.value(key);
-                v = val.toInt();
+                if(val.isArray())
+                {
+                    QJsonArray arr = val.toArray();
+                    v = arr[0].toInt();
+                }
+                else
+                {
+                    v = val.toInt();
+                }
             }
             if(v != JAIL_SYS_CALL_PASS_FOREVER && v != JAIL_SYS_CALL_ABORT_FOREVER)
             {
@@ -394,7 +410,12 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                         darg[i] += QString::number(result, 16).toUpper();
                     }
                 }
-                emit catchSyscall(notifypid, status, data, darg);
+                QList<QString> dargs;
+                for(int i = 0; i <= 5; i++)
+                {
+                    dargs.append(darg[i]);
+                }
+                emit catchSyscall(notifypid, status, data, dargs);
                 while(blockSig)
                 {
                     if(blockSig == SYSMSG_PEEK_ADDR)

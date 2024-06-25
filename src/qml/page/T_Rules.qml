@@ -36,6 +36,8 @@ FluContentPage{
                 return "Allow forever"
             case 4:
                 return "Abort forever"
+            case 5:
+                return "Script"
         }
     }
     onNameKeywordChanged: {
@@ -192,6 +194,63 @@ FluContentPage{
         ListElement {name: "notify"; val: 2}
         ListElement {name: "allow forever"; val: 3}
         ListElement {name: "abort forever"; val: 4}
+        ListElement {name: "script"; val: 5}
+    }
+    FluContentDialog{
+        id: rules_dialog_edit_script
+        property int target_nr: 0
+        property string script
+        title: qsTr("Custom rule")
+        message: qsTr("Edit your bash script here")
+        negativeText: qsTr("Cancel")
+        signal displayScript(string s)
+        contentDelegate: Component{
+            Item{
+                implicitWidth: parent.width
+                implicitHeight: 300
+                x: 20
+                FluMultilineTextBox {
+                    id: script_input
+                    width: parent.width - 50
+                    implicitHeight: parent.height
+                    font.family: 'Noto Sans Mono'
+                    Keys.onTabPressed: (event)=> {
+                        insert(cursorPosition, "    ")
+                        cursorPosition += 4
+                        event.accept = true
+                    }
+                    Component.onCompleted: {
+                        rules_dialog_edit_script.script = Qt.binding(function(){return text})
+                    }
+                    Connections {
+                        target: rules_dialog_edit_script
+                        function onDisplayScript(s) {
+                            script_input.text = s
+                        }
+                    }
+                }
+            }
+        }
+
+        onOpened: {
+            if (typeof json[target_nr] == "object") {
+                displayScript(Qt.atob(json[target_nr][1]))
+            }
+        }
+        onNegativeClicked: {
+            showError(qsTr("Canceled"))
+        }
+        positiveText: qsTr("Save")
+        onPositiveClicked: {
+            var reval = controller.updateRule(target_nr, 5, script)
+            console.log(script)
+            if(reval == 1) {
+                showSuccess(qsTr("Script saved"))
+            }
+            else {
+                showError(qsTr("Failed, this is a force enabled syscall"))
+            }
+        }
     }
     Component{
         id:com_changeto
@@ -209,12 +268,19 @@ FluContentPage{
                     text: qsTr("Update")
                     onClicked: {
                         var obj = table_view.getRow(row)
-                        var reval = controller.updateRule(obj.nr, rule_selecter.currentValue)
-                        if(reval == 1) {
-                            showSuccess(qsTr("Updated"))
+                        if(rule_selecter.currentValue < 5) {
+                            var reval = controller.updateRule(obj.nr, rule_selecter.currentValue)
+                            if(reval == 1) {
+                                showSuccess(qsTr("Updated"))
+                            }
+                            else {
+                                showError(qsTr("Failed, this is a force enabled syscall"))
+                            }
                         }
                         else {
-                            showError(qsTr("Failed, this is a force enabled syscall"))
+                            rules_dialog_edit_script.target_nr = obj.nr
+                            rules_dialog_edit_script.open()
+                            //reval = controller.updateRule(obj.nr, rule_selecter.currentValue, script)
                         }
                     }
                 }
@@ -351,7 +417,7 @@ FluContentPage{
         return {
             nr: num,
             name: controller.qmlFSN(num),
-            status: getRuleName(json[num]),
+            status: getRuleName((typeof json[num] == "object")?json[num][0]:json[num]),
             combobox: table_view.customItem(com_changeto),
             _minimumHeight:50,
             _key:FluTools.uuid()
@@ -377,12 +443,15 @@ FluContentPage{
         function onIsTracingchanged(isTracing) {
             if(isTracing)
             {
-                list_changeto.remove(3, 2)
+                list_changeto.remove(3, 3)
+                list_changeto.append({"name": "script", "val": 5})
             }
             else
             {
+                list_changeto.remove(3, 1)
                 list_changeto.append({"name": "allow forever", "val": 3})
                 list_changeto.append({"name": "abort forever", "val": 4})
+                list_changeto.append({"name": "script", "val": 5})
             }
         }
     }

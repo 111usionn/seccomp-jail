@@ -85,21 +85,41 @@ QJsonArray Controller::checkRule(int n)
     if(currentRules.contains(key))
     {
         QJsonValue val = currentRules.value(key);
-        return val.toArray();
+        if(val.isArray())
+        {
+            return val.toArray();
+        }
+        else
+        {
+            QJsonArray arr;
+            arr.append(val);
+            return arr;
+        }
     }
     else
     {
-        return QJsonArray({JAIL_SYS_CALL_ABORT_FOREVER});
+        QJsonValue val = JAIL_SYS_CALL_ABORT_FOREVER;
+        QJsonArray arr;
+        arr.append(val);
+        return arr;
     }
 }
 
-int Controller::updateRule(int n, int option)
+int Controller::updateRule(int n, int option, QString script)
 {
     QString nr = QString::number(n);
     if(Watcher::seccomp_force_enable_calls(n)) return 0;
     if(currentRules.contains(nr))
     {
+        if(option < 5)
         currentRules[nr] = option;
+        else
+        {
+            QByteArray qba = script.toUtf8();
+            QString script_base64 = qba.toBase64();
+            QJsonArray temp = {5, script_base64};
+            currentRules[nr] = temp;
+        }
         emit currentRuleChanged();
         return 1;
     }
@@ -219,7 +239,7 @@ void Controller::getCommand(int pid, int status, int nr, QString arg1, QString a
 }
 
 
-void Controller::notifySyscall(int pid, int status, seccomp_data data, QString darg[6])
+void Controller::notifySyscall(int pid, int status, seccomp_data data, QList<QString> dargs)
 {
     QString sname;
     if(!finishmunmap)
@@ -234,6 +254,7 @@ void Controller::notifySyscall(int pid, int status, seccomp_data data, QString d
     {
         QJsonArray ja = checkRule(data.nr);
         int resp_type = ja[0].toInt();
+        REJUDGE:
         switch(resp_type)
         {
         case JAIL_SYS_CALL_PASS:
@@ -262,23 +283,34 @@ void Controller::notifySyscall(int pid, int status, seccomp_data data, QString d
             script.waitForStarted();
             QByteArray qba = (command + "\n").toUtf8();
             script.write(qba.data());
+            script.waitForBytesWritten();
             for(int i = 0; i < 6; i++)
             {
-                command = "SJ_DARG" + QString::number(i+1) + "=$(cat <<EOF";
-                qba = (command + "\n").toUtf8();
+                QString cmd = "SJ_DARG" + QString::number(i+1) + "=$(cat <<EOF" + "\n";
+                qba = cmd.toUtf8();
                 script.write(qba.data());
-                qba = (darg[i] + "\n").toUtf8();
+                script.waitForBytesWritten();
+
+                QString t = dargs[i] + "\n";
+                qba = t.toUtf8();
                 script.write(qba.data());
+                script.waitForBytesWritten();
+
                 script.write("EOF\n");
+                script.waitForBytesWritten();
+
                 script.write(")\n");
+                script.waitForBytesWritten();
             }
             command = ja[1].toString();
-            qba = command.toUtf8();
-            qba = QByteArray::fromBase64(qba);
+            qba.clear();
+            qba = QByteArray::fromBase64(command.toLatin1());
             qba.append('\n');
             script.write(qba.data());
             script.waitForFinished();
             resp_type = script.exitCode();
+            qDebug() << "resp_type:" << resp_type;
+            goto REJUDGE;
         }
     }
 }

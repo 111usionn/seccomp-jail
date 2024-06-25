@@ -1,6 +1,7 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 #include <QObject>
+#include <cstring>
 #include "watcher.h"
 class Controller : public QObject
 {
@@ -25,7 +26,7 @@ signals:
 public slots:
     int startTrace(QString path, QString args);
     void stopTrace();
-    void notifySyscall(int pid, int status, seccomp_data data, QString darg[6]);
+    void notifySyscall(int pid, int status, seccomp_data data, QList<QString> dargs);
     //void stopBlocking(int option, int blockState);
     void stopBlocking(int option, int blockState, int arg);
     void sendLog(QString log);
@@ -33,7 +34,7 @@ public slots:
     void loadRule(QString path);
     void createDefaultRule(int option);
     QJsonArray checkRule(int n);
-    int updateRule(int n, int option);
+    int updateRule(int n, int option, QString script_base64 = "");
     void saveCurrentRule(QString saveAs = "");
     void notifyPeekData(int pid, int num, long data);
     int haveCurrentRule();
