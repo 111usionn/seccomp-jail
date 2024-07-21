@@ -1,5 +1,6 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
+
 #include <QObject>
 #include <cstring>
 #include "watcher.h"
@@ -23,12 +24,13 @@ signals:
     void startInjector(int pid, int nr, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, int argc);
     void threadQuit();
     void pushEvent(int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption);
+    void sendDataToServerR(DataPackage pkg);
 public slots:
     int startTrace(QString path, QString args);
+    void readDataFromSocket(QByteArray qba);
     void stopTrace();
-    void notifySyscall(int pid, int status, seccomp_data data, QList<QString> dargs);
+    void notifySyscall(int pid, int status, seccomp_data data, QList<QString> dargs, int remote_script_resp = -1);
     //void stopBlocking(int option, int blockState);
-    void stopBlocking(int option, int blockState, int arg);
     void sendLog(QString log);
     int setRule(QString path);
     void loadRule(QString path);
@@ -44,6 +46,8 @@ public slots:
     void drawProcTree(int pid);
     void startInject(int pid, int nr, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, int argc);
     void getCommand(int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption);
+    void isRemote_setter(bool val);
+
 private:
     QThread* thread;
     Watcher* watcher;
@@ -53,6 +57,9 @@ private:
     bool finishmunmap;
     QString currentRulePath;
     bool ruleDisplayFilter[5];
+    MyTcpSocket* myTcpSocket;
+    bool isRemote;
+    void stopBlocking(bool mode, int option, int blockState, int arg);
 };
 
 #endif // CONTROLLER_H

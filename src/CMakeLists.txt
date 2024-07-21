@@ -16,8 +16,8 @@ else()
     set(APPLICATION_DIR_PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endif()
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick Network)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick Network)
 
 list(APPEND CMAKE_MODULE_PATH /usr/cmake)
 #find_package(SECCOMP REQUIRED)
@@ -53,11 +53,20 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        component/CircularReveal.cpp component/CircularReveal.h
         stdafx.h
         component/CircularReveal.cpp component/CircularReveal.h component/FileWatcher.cpp component/FileWatcher.h component/FpsItem.cpp component/FpsItem.h component/OpenGLItem.cpp component/OpenGLItem.h
         component/controller.cpp component/controller.h component/watcher.cpp component/watcher.h component/global.h
         component/clipboard.cpp component/clipboard.h
+        component/mytcpserver.cpp component/mytcpserver.h component/mytcpsocket.cpp component/mytcpsocket.h
+
+    )
+    add_executable("${PROJECT_NAME}-net-core"
+        component/mytcpserver.cpp component/mytcpserver.h component/mytcpsocket.cpp component/mytcpsocket.h
+        main_net_core.cpp
+        component/subcontroller.h component/subcontroller.cpp
+        component/watcher.cpp
+        component/watcher.h
+        component/global.h
 
     )
 else()
@@ -71,10 +80,15 @@ add_dependencies(${PROJECT_NAME} Script-UpdateTranslations)
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::Network
     fluentuiplugin
     seccomp
 )
-
+target_link_libraries("${PROJECT_NAME}-net-core" PRIVATE
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Network
+    seccomp
+)
 if(${QT_VERSION} VERSION_LESS 6.1.0)
     set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.${PROJECT_NAME})
 endif()
@@ -91,6 +105,9 @@ install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
+install(TARGETS "${PROJECT_NAME}-net-core"
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_import_qml_plugins(${PROJECT_NAME})
     qt_finalize_executable(${PROJECT_NAME})

@@ -76,6 +76,7 @@ FluContentPage{
                     rightMargin: 10
                 }
                 onClicked: {
+                    controller.isRemote_setter(false)
                     controller.startTrace(home_textbox_program.text, home_textbox_args.text)
                     enabled = false
                     home_btn_stop.enabled = true
@@ -125,7 +126,7 @@ FluContentPage{
                     verticalCenter: parent.verticalCenter
                     left: parent.left
                 }
-                text: "mkdir"
+                text: "127.0.0.1:1234 mkdir"
             }
 
             FluTextBox{
@@ -151,7 +152,9 @@ FluContentPage{
                     rightMargin: 10
                 }
                 onClicked: {
+                    controller.isRemote_setter(true)
                     controller.startTrace(home_textbox_program_remote.text, home_textbox_args_remote.text)
+                    console.log(123)
                     enabled = false
                     home_btn_stop.enabled = true
                     home_btn_to_local.enabled = false

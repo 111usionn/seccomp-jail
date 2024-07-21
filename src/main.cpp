@@ -2,8 +2,8 @@
 #include <QQmlApplicationEngine>
 #include <QTranslator>
 #include "component/CircularReveal.h"
-#include "component/controller.h"
 #include "component/clipboard.h"
+#include "component/controller.h"
 int main(int argc, char *argv[])
 {
     const char *uri = "seccompjail";
@@ -14,7 +14,6 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
     QGuiApplication app(argc, argv);
-
     qmlRegisterType<CircularReveal>(uri, major, minor, "CircularReveal");
     qmlRegisterType<Controller>("Controller", 1, 0, "Controller");
     qmlRegisterType<ClipBoard>("ClipBoard", 1, 0, "ClipBoard");
@@ -22,7 +21,7 @@ int main(int argc, char *argv[])
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {
         const QString baseName = "seccomp-jail_" + QLocale(locale).name();
-        if (translator.load("./i18n/"+ baseName)) {
+        if (translator.load("./i18n/" + baseName)) {
             app.installTranslator(&translator);
             break;
         }
@@ -30,11 +29,15 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/App.qml"));
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-        &app, [url](QObject *obj, const QUrl &objUrl) {
+    QObject::connect(
+        &engine,
+        &QQmlApplicationEngine::objectCreated,
+        &app,
+        [url](QObject *obj, const QUrl &objUrl) {
             if (!obj && url == objUrl)
                 QCoreApplication::exit(-1);
-        }, Qt::QueuedConnection);
+        },
+        Qt::QueuedConnection);
     engine.load(url);
 
     return app.exec();

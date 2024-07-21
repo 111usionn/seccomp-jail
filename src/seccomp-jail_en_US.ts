@@ -55,120 +55,120 @@
     <message>
         <location filename="qml/page/T_Home.qml" line="11"/>
         <location filename="qml/page/T_Home.qml" line="71"/>
-        <location filename="qml/page/T_Home.qml" line="146"/>
+        <location filename="qml/page/T_Home.qml" line="147"/>
         <source>Trace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="qml/page/T_Home.qml" line="47"/>
-        <location filename="qml/page/T_Home.qml" line="122"/>
+        <location filename="qml/page/T_Home.qml" line="123"/>
         <source>Path of program</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="qml/page/T_Home.qml" line="58"/>
-        <location filename="qml/page/T_Home.qml" line="133"/>
+        <location filename="qml/page/T_Home.qml" line="134"/>
         <source>Args</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="89"/>
-        <location filename="qml/page/T_Home.qml" line="164"/>
+        <location filename="qml/page/T_Home.qml" line="90"/>
+        <location filename="qml/page/T_Home.qml" line="167"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="105"/>
+        <location filename="qml/page/T_Home.qml" line="106"/>
         <source>Remote</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="179"/>
+        <location filename="qml/page/T_Home.qml" line="182"/>
         <source>Local</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="195"/>
+        <location filename="qml/page/T_Home.qml" line="198"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="225"/>
+        <location filename="qml/page/T_Home.qml" line="228"/>
         <source>Select an action</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="227"/>
+        <location filename="qml/page/T_Home.qml" line="230"/>
         <source>Pass</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="242"/>
+        <location filename="qml/page/T_Home.qml" line="245"/>
         <source>Abort</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="251"/>
+        <location filename="qml/page/T_Home.qml" line="254"/>
         <source>Pass and add to rules</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="267"/>
+        <location filename="qml/page/T_Home.qml" line="270"/>
         <source>Abort and add to rules</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="277"/>
+        <location filename="qml/page/T_Home.qml" line="280"/>
         <source>More...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="311"/>
+        <location filename="qml/page/T_Home.qml" line="314"/>
         <source>pid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="318"/>
+        <location filename="qml/page/T_Home.qml" line="321"/>
         <source>nr</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="325"/>
+        <location filename="qml/page/T_Home.qml" line="328"/>
         <source>syscall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="332"/>
+        <location filename="qml/page/T_Home.qml" line="335"/>
         <source>arg1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="341"/>
+        <location filename="qml/page/T_Home.qml" line="344"/>
         <source>arg2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="349"/>
+        <location filename="qml/page/T_Home.qml" line="352"/>
         <source>arg3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="357"/>
+        <location filename="qml/page/T_Home.qml" line="360"/>
         <source>arg4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="365"/>
+        <location filename="qml/page/T_Home.qml" line="368"/>
         <source>arg5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="373"/>
+        <location filename="qml/page/T_Home.qml" line="376"/>
         <source>arg6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Home.qml" line="381"/>
+        <location filename="qml/page/T_Home.qml" line="384"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>

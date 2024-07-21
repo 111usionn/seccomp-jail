@@ -14,6 +14,18 @@
 #define SYSMSG_DEAL_LATER 2
 #define SYSMSG_PEEK_ADDR 4
 
+#define COMMAND_TO_REMOTE_START_TRACE 0
+#define COMMAND_TO_REMOTE_STOP_BLOCKING 1
+#define COMMAND_TO_REMOTE_RUN_SCRIPT 2
+#define COMMAND_TO_REMOTE_PUSH_EVENT 3
+
+#define COMMAND_FROM_REMOTE_CATCHSYSCALL 0
+#define COMMAND_FROM_REMOTE_SENDPEEKDATA 1
+#define COMMAND_FROM_REMOTE_WRITELOG 2
+#define COMMAND_FROM_REMOTE_SENDSTOP 3
+#define COMMAND_FROM_REMOTE_CREATEPROCTREE 4
+#define COMMAND_FROM_REMOTE_RESULT_OF_SCRIPT 5
+
 #include <QDebug>
 #include <QEventLoop>
 #include <seccomp.h>
@@ -41,7 +53,11 @@
 #include <QDateTime>
 #include <QFile>
 #include <sys/user.h>
+#include "mytcpserver.h"
+#include "mytcpsocket.h"
 
+#ifndef STRUCTS
+#define STRUCTS
 struct syscall_info{
     int pid;
     int status;
@@ -55,3 +71,8 @@ struct syscall_info{
 struct Settings {
     bool enableLDPRELOAD;
 };
+struct DataPackage {
+    int type;
+    QByteArray data;
+};
+#endif

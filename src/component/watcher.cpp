@@ -1,4 +1,4 @@
-#include "controller.h"
+#include "watcher.h"
 
 bool Watcher::seccomp_force_enable_calls(int i)
 {
@@ -9,7 +9,7 @@ bool Watcher::seccomp_force_enable_calls(int i)
     return 1;
 }
 
-Watcher::Watcher(QObject *parent)
+Watcher::Watcher(bool mode, QObject *parent)
     : QObject{parent}
 {
     endFlag = 1;
@@ -17,6 +17,7 @@ Watcher::Watcher(QObject *parent)
     addroffset = 0;
     deref_offset = 1;
     settings.enableLDPRELOAD = 1;
+    isSub = mode;
 }
 
 int Watcher::gethookoffset()
@@ -56,6 +57,7 @@ void Watcher::dealNow(int pid, int status, int nr, QString arg1, QString arg2, Q
     temp.nextMove = nextMove;
     temp.blockSig = blockSig;
     temp.extraOption = extraOption;
+    qDebug() << temp.nextMove << temp.blockSig << temp.extraOption;
     notified_events.enqueue(temp);
 }
 
@@ -248,6 +250,7 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
             if(!notified_events.isEmpty())
             {
                 syscall_info info = notified_events.dequeue();
+                qDebug() << "notified";
                 if(info.blockSig == SYSMSG_PEEK_ADDR)
                 {
                     for(int i = 0; i <= info.extraOption; i++)
@@ -270,7 +273,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                             ptrace(PTRACE_POKEUSER, info.pid, des[i], args[i]);
                         }
                     }
-
                     if(info.nextMove == 1)//pass
                     {
                         if(info.extraOption == 0)
@@ -302,7 +304,8 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                         }
                     }
                     QString log;
-                    if(info.nextMove != 2)log = QDateTime::currentDateTime().toString() + " pid: " + QString::number(info.pid) + " nr: " + QString::number(info.nr) + "(" + Controller::findSyscallName(info.nr) + ")" +
+                    if(info.nextMove != 2)log = QDateTime::currentDateTime().toString() + " pid: " + QString::number(info.pid) + " nr: " + QString::number(info.nr) + "(" +
+                              findSyscallName(info.nr) + ")" +
                               " arg1: " + QString::number(info.args[0]) + " arg2: " + QString::number(info.args[1]) + " arg3: " + QString::number(info.args[2]) + " arg4: " + QString::number(info.args[3]) +
                               " arg5: " + QString::number(info.args[4]) + " arg6: " + QString::number(info.args[5]) + " action: " + action;
                     if(info.status >> 8 == (SIGTRAP | (PTRACE_EVENT_EXEC<<8)))
@@ -379,6 +382,7 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
             {
                 continue;
             }
+            //bool isExec = 0;
             if((status >> 8 == (SIGTRAP | (PTRACE_EVENT_SECCOMP<<8))) || (status >> 8 == (SIGTRAP | (PTRACE_EVENT_EXEC<<8))))
             {
                 emit processStopped(notifypid);
@@ -400,6 +404,7 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                 else
                 {
                     data.nr = SCMP_SYS(execve);
+                    //isExec = 1;
                 }
                 QString darg[6];
                 for(int i = 0; i <= 5; i++)
@@ -473,7 +478,8 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                 }
                 waiting_for_inject(notifypid);
                 QString log;
-                if(nextMove != 2)log = QDateTime::currentDateTime().toString() + " pid: " + QString::number(notifypid) + " nr: " + QString::number(data.nr) + "(" + Controller::findSyscallName(data.nr) + ")" +
+                if(nextMove != 2)log = QDateTime::currentDateTime().toString() + " pid: " + QString::number(notifypid) + " nr: " + QString::number(data.nr) + "(" +
+                          findSyscallName(data.nr) + ")" +
                           " arg1: " + QString::number(data.args[0]) + " arg2: " + QString::number(data.args[1]) + " arg3: " + QString::number(data.args[2]) + " arg4: " + QString::number(data.args[3]) +
                           " arg5: " + QString::number(data.args[4]) + " arg6: " + QString::number(data.args[5]) + " action: " + action;
                 if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_EXEC<<8)))
@@ -538,6 +544,21 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                     log += reval;
                 }
                 if(nextMove != 2)emit writeLog(log);
+                /*if(isExec)
+                {
+                    int pidfd = syscall(SYS_pidfd_open, notifypid, 0);
+                    int fd_input = syscall(SYS_pidfd_getfd, pidfd, 0, 0), fd_output = syscall(SYS_pidfd_getfd, pidfd, 1, 0);
+                    input = new QFile;
+                    output = new QFile;
+                    input->open(fd_input, QIODevice::WriteOnly);
+                    output->open(fd_output, QIODevice::ReadOnly);
+                    connect(output, &QFile::readyRead, [=]{
+                        QByteArray qba = output->readAll();
+                        QString msg(qba);
+                        qDebug() << "get msg from std output:" << msg;
+                        emit sendStdOutput(msg);
+                    });
+                }*/
                 ptrace(PTRACE_CONT, notifypid, 0, 0);
                 emit processRestarted(notifypid);
             }
@@ -625,4 +646,29 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
         }
         emit sendStop();
     }
+}
+
+QString Watcher::findSyscallName(int nr)
+{
+    QFile st("/usr/include/x86_64-linux-gnu/asm/unistd_64.h");
+    st.open(QFile::ReadOnly);
+    QTextStream in(&st);
+    in.readLine();
+    in.readLine();
+    in.readLine();
+    QString line, sname = "unknown", tname, snr;
+    while(!in.atEnd())
+    {
+        line = in.readLine();
+        tname = line.section(" ", 1, 1);
+        snr = line.section(" ", 2, 2);
+        int inr = snr.toInt();
+        if(inr == nr)
+        {
+            sname = tname;
+            break;
+        }
+    }
+    st.close();
+    return sname;
 }

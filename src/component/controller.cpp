@@ -4,6 +4,7 @@ Controller::Controller(QObject *parent)
     : QObject{parent}
 {
     isTracing = 0;
+    isRemote = 0;
 }
 
 Controller::~Controller()
@@ -165,10 +166,11 @@ int Controller::haveCurrentRule()
 
 void Controller::drawProcTree(int pid)
 {
+    QByteArray output;
     QProcess p;
     p.start("pstree", QStringList() << "-p" << "-U" << QString::number(pid));
     p.waitForFinished();
-    QByteArray output = p.readAllStandardOutput();
+    output = p.readAllStandardOutput();
     p.close();
     QString procTree(output);
     emit qmlDrawProcTree(procTree);
@@ -187,25 +189,97 @@ int Controller::startTrace(QString path, QString args)
     isTracing = 1;
     emit isTracingchanged(isTracing);
     finishmunmap = checkRule(SCMP_SYS(munmap))[0].toInt() == JAIL_SYS_CALL_PASS_FOREVER ?1:0;
-    thread = new QThread;
-    watcher = new Watcher;
-    watcher->moveToThread(thread);
-    connect(thread, &QThread::finished, watcher, &Watcher::deleteLater);
-    connect(watcher, &Watcher::destroyed, thread, &QThread::deleteLater);
-    connect(this, &Controller::threadQuit, thread, &QThread::terminate);
     QStringList list = args.split(" ");
-    //connect
-    thread->start();
-    connect(this, &Controller::st, watcher, &Watcher::createPuppet);
-    connect(watcher, &Watcher::catchSyscall, this, &Controller::notifySyscall);
-    connect(watcher, &Watcher::sendPeekData, this, &Controller::notifyPeekData);
-    connect(watcher, &Watcher::writeLog, this, &Controller::sendLog);
-    connect(watcher, &Watcher::sendStop, this, &Controller::stopTrace);
-    connect(watcher, &Watcher::createProcTree, this, &Controller::drawProcTree);
-    connect(this, &Controller::startInjector, watcher, &Watcher::injector);
-    connect(this, &Controller::pushEvent, watcher, &Watcher::dealNow);
-    emit st(path, list, currentRules);
+    if(!isRemote)
+    {
+        thread = new QThread;
+        watcher = new Watcher(0);
+        watcher->moveToThread(thread);
+        connect(thread, &QThread::finished, watcher, &Watcher::deleteLater);
+        connect(watcher, &Watcher::destroyed, thread, &QThread::deleteLater);
+        connect(this, &Controller::threadQuit, thread, &QThread::terminate);
+        thread->start();
+        connect(this, &Controller::st, watcher, &Watcher::createPuppet);
+        connect(watcher, &Watcher::catchSyscall, this, &Controller::notifySyscall);
+        connect(watcher, &Watcher::sendPeekData, this, &Controller::notifyPeekData);
+        connect(watcher, &Watcher::writeLog, this, &Controller::sendLog);
+        connect(watcher, &Watcher::sendStop, this, &Controller::stopTrace);
+        connect(watcher, &Watcher::createProcTree, this, &Controller::drawProcTree);
+        connect(this, &Controller::startInjector, watcher, &Watcher::injector);
+        connect(this, &Controller::pushEvent, watcher, &Watcher::dealNow);
+        emit st(path, list, currentRules);
+    }
+    else
+    {
+        qDebug() << "remote tracing..";
+        QString endPoint = path.split(" ").at(0), realPath = path.split(" ").at(1);
+        qDebug() << endPoint << realPath;
+        myTcpSocket = new MyTcpSocket(0, 0);
+        connect(myTcpSocket, &MyTcpSocket::myReadyRead, this, &Controller::readDataFromSocket);
+        connect(this, &Controller::sendDataToServerR, myTcpSocket, &MyTcpSocket::writeSlotR);
+        myTcpSocket->connectToHost(endPoint.split(":").at(0), endPoint.split(":").at(1).toInt());
+        if(myTcpSocket->waitForConnected(5000))//5s
+        {
+            qDebug() << "connected";
+            DataPackage pkg;
+            pkg.type = COMMAND_TO_REMOTE_START_TRACE;
+            QDataStream out(&pkg.data, QIODevice::WriteOnly);
+            out << realPath << list << currentRules;
+            emit sendDataToServerR(pkg);
+        }
+        else
+        {
+            myTcpSocket->deleteLater();
+        }
+    }
     return 1;
+}
+
+void Controller::readDataFromSocket(QByteArray qba)
+{
+    QDataStream in(&qba, QIODevice::ReadOnly);
+    struct DataPackage temp;
+    in >> temp.type >> temp.data;
+    QDataStream iN(&temp.data, QIODevice::ReadOnly);
+    if(temp.type == COMMAND_FROM_REMOTE_CATCHSYSCALL)
+    {
+        int pid, status;
+        seccomp_data data;
+        QList<QString> dargs;
+        iN >> pid >> status >> data.nr >> data.args[0] >> data.args[1] >> data.args[2] >> data.args[3] >> data.args[4] >> data.args[5] >> data.args[6] >> dargs;
+        notifySyscall(pid, status, data, dargs);
+    }
+    else if(temp.type == COMMAND_FROM_REMOTE_SENDPEEKDATA)
+    {
+        int pid, num;
+        qint64 data;
+        iN >> pid >> num >> data;
+        notifyPeekData(pid, num, data);
+    }
+    else if(temp.type == COMMAND_FROM_REMOTE_WRITELOG)
+    {
+        QString log;
+        iN >> log;
+        sendLog(log);
+    }
+    else if(temp.type == COMMAND_FROM_REMOTE_CREATEPROCTREE)
+    {
+        QString procTree;
+        iN >> procTree;
+        emit qmlDrawProcTree(procTree);
+    }
+    else if(temp.type == COMMAND_FROM_REMOTE_SENDSTOP)
+    {
+        stopTrace();
+    }
+    else if(temp.type == COMMAND_FROM_REMOTE_RESULT_OF_SCRIPT)
+    {
+        int exit_code, pid, status;
+        seccomp_data data;
+        QList<QString> dargs;
+        iN >> exit_code >> pid >> status >> data.nr >> data.args[0] >> data.args[1] >> data.args[2] >> data.args[3] >> data.args[4] >> data.args[5] >> data.args[6] >> dargs;
+        notifySyscall(pid, status, data, dargs, exit_code);
+    }
 }
 
 QString Controller::findSyscallName(int nr)
@@ -235,16 +309,27 @@ QString Controller::findSyscallName(int nr)
 
 void Controller::getCommand(int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption)
 {
-    emit pushEvent(pid, status, nr, arg1, arg2, arg3, arg4, arg5, arg6, mask, nextMove, blockSig, extraOption);
+    if(!isRemote)
+    {
+        emit pushEvent(pid, status, nr, arg1, arg2, arg3, arg4, arg5, arg6, mask, nextMove, blockSig, extraOption);
+    }
+    else
+    {
+        DataPackage pkg;
+        pkg.type = COMMAND_TO_REMOTE_PUSH_EVENT;
+        QDataStream out(&pkg.data, QIODevice::WriteOnly);
+        out << pid << status << nr << arg1 << arg2 << arg3 << arg4 << arg5 << arg6 << mask << nextMove << blockSig << extraOption;
+        emit sendDataToServerR(pkg);
+    }
 }
 
 
-void Controller::notifySyscall(int pid, int status, seccomp_data data, QList<QString> dargs)
+void Controller::notifySyscall(int pid, int status, seccomp_data data, QList<QString> dargs, int remote_script_resp)
 {
     QString sname;
     if(!finishmunmap)
     {
-        stopBlocking(2, SYSMSG_STOP_BLOCKING, 0);
+        stopBlocking(isRemote, 2, SYSMSG_STOP_BLOCKING, 0);
         if(data.nr == SCMP_SYS(munmap))
         {
             finishmunmap = 1;
@@ -253,64 +338,75 @@ void Controller::notifySyscall(int pid, int status, seccomp_data data, QList<QSt
     else
     {
         QJsonArray ja = checkRule(data.nr);
-        int resp_type = ja[0].toInt();
+        int resp_type = remote_script_resp == -1?ja[0].toInt():remote_script_resp;
         REJUDGE:
         switch(resp_type)
         {
         case JAIL_SYS_CALL_PASS:
-            stopBlocking(1, SYSMSG_STOP_BLOCKING, 1);
+            stopBlocking(isRemote, 1, SYSMSG_STOP_BLOCKING, 1);
             break;
         case JAIL_SYS_CALL_ABORT:
-            stopBlocking(0, SYSMSG_STOP_BLOCKING, 1);
+            stopBlocking(isRemote, 0, SYSMSG_STOP_BLOCKING, 1);
             break;
         case JAIL_SYS_CALL_NOTIFY:
             sname = findSyscallName(data.nr);
             emit showSyscall(pid, status, sname, data.nr, QString::number(data.args[0]), QString::number(data.args[1]), QString::number(data.args[2]), QString::number(data.args[3]), QString::number(data.args[4]), QString::number(data.args[5]));
-            stopBlocking(0, SYSMSG_DEAL_LATER, 0);
+            stopBlocking(isRemote, 0, SYSMSG_DEAL_LATER, 0);
             break;
         case JAIL_SYS_CALL_PASS_FOREVER:
-            stopBlocking(2, SYSMSG_STOP_BLOCKING, 0);
+            stopBlocking(isRemote, 2, SYSMSG_STOP_BLOCKING, 0);
             break;
         case JAIL_SYS_CALL_CUSTOM:
-            QProcess script;
-            QString command;
-            command += "SJ_PID=" + QString::number(pid);
-            for(int i = 0; i < 6; i++)
+            if(!isRemote)
             {
-                command += " SJ_ARG" + QString::number(i+1) + "=" + QString::number(data.args[i]);
-            }
-            script.start("bash");
-            script.waitForStarted();
-            QByteArray qba = (command + "\n").toUtf8();
-            script.write(qba.data());
-            script.waitForBytesWritten();
-            for(int i = 0; i < 6; i++)
-            {
-                QString cmd = "SJ_DARG" + QString::number(i+1) + "=$(cat <<EOF" + "\n";
-                qba = cmd.toUtf8();
+                QProcess script;
+                QString command;
+                command += "SJ_PID=" + QString::number(pid);
+                for(int i = 0; i < 6; i++)
+                {
+                    command += " SJ_ARG" + QString::number(i+1) + "=" + QString::number(data.args[i]);
+                }
+                script.start("bash");
+                script.waitForStarted();
+                QByteArray qba = (command + "\n").toUtf8();
                 script.write(qba.data());
                 script.waitForBytesWritten();
+                for(int i = 0; i < 6; i++)
+                {
+                    QString cmd = "SJ_DARG" + QString::number(i+1) + "=$(cat <<EOF" + "\n";
+                    qba = cmd.toUtf8();
+                    script.write(qba.data());
+                    script.waitForBytesWritten();
 
-                QString t = dargs[i] + "\n";
-                qba = t.toUtf8();
+                    QString t = dargs[i] + "\n";
+                    qba = t.toUtf8();
+                    script.write(qba.data());
+                    script.waitForBytesWritten();
+
+                    script.write("EOF\n");
+                    script.waitForBytesWritten();
+
+                    script.write(")\n");
+                    script.waitForBytesWritten();
+                }
+                command = ja[1].toString();
+                qba.clear();
+                qba = QByteArray::fromBase64(command.toLatin1());
+                qba.append('\n');
                 script.write(qba.data());
-                script.waitForBytesWritten();
-
-                script.write("EOF\n");
-                script.waitForBytesWritten();
-
-                script.write(")\n");
-                script.waitForBytesWritten();
+                script.waitForFinished();
+                resp_type = script.exitCode();
+                qDebug() << "resp_type:" << resp_type;
+                goto REJUDGE;
             }
-            command = ja[1].toString();
-            qba.clear();
-            qba = QByteArray::fromBase64(command.toLatin1());
-            qba.append('\n');
-            script.write(qba.data());
-            script.waitForFinished();
-            resp_type = script.exitCode();
-            qDebug() << "resp_type:" << resp_type;
-            goto REJUDGE;
+            else
+            {
+                DataPackage pkg;
+                pkg.type = COMMAND_TO_REMOTE_RUN_SCRIPT;
+                QDataStream out(&pkg.data, QIODevice::WriteOnly);
+                out << ja[1].toString() << pid << status << data.nr << data.args[0] << data.args[1] << data.args[2] << data.args[3] << data.args[4] << data.args[5] << dargs;
+                emit sendDataToServerR(pkg);
+            }
         }
     }
 }
@@ -324,11 +420,22 @@ void Controller::notifyPeekData(int pid, int num, long data)
     emit showPeekData(pid, num, data, qstrtemp);
 }
 
-void Controller::stopBlocking(int option, int blockState, int arg)
+void Controller::stopBlocking(bool mode, int option, int blockState, int arg)
 {
-    watcher->nextMove = option;
-    watcher->extraOption = arg;
-    watcher->blockSig = blockState;
+    if(!mode)
+    {
+        watcher->nextMove = option;
+        watcher->extraOption = arg;
+        watcher->blockSig = blockState;
+    }
+    else
+    {
+        DataPackage pkg;
+        pkg.type = COMMAND_TO_REMOTE_STOP_BLOCKING;
+        QDataStream out(&pkg.data, QIODevice::WriteOnly);
+        out << option << blockState << arg;
+        emit sendDataToServerR(pkg);
+    }
 }
 
 void Controller::sendLog(QString log)
@@ -340,6 +447,14 @@ void Controller::stopTrace()
 {
     isTracing = 0;
     emit isTracingchanged(isTracing);
-    watcher->endFlag = 0;
-    emit threadQuit();
+    if(!isRemote)
+    {
+        watcher->endFlag = 0;
+        emit threadQuit();
+    }
+}
+
+void Controller::isRemote_setter(bool val)
+{
+    isRemote = val;
 }
