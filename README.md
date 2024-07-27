@@ -709,12 +709,12 @@ int main()
 
 ### [waitpid](https://man7.org/linux/man-pages/man2/waitpid.2.html)
 
-### [libseccomp](https://github.com/seccomp/libseccomp)
+### [libseccomp](https://github.com/seccomp/libseccomp) -LGPL-2.1 license
 
 为seccomp提供了更易用，可读性更高的api。项目贡献者Paul Moore先生也非常友善，
 多次耐心解答我的疑问。
 
-### [QML FluentUI](https://github.com/zhuzichu520/FluentUI)
+### [QML FluentUI](https://github.com/zhuzichu520/FluentUI) -MIT license
 
 基于QML实现，非常美观，功能强大的控件库。
 
