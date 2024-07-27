@@ -701,7 +701,7 @@ int main()
 
 &#9744;美化日志界面
 
-## 参考资料
+## 参考资料及许可证信息
 
 ### [ptrace](https://man7.org/linux/man-pages/man2/ptrace.2.html)
 
