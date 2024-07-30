@@ -172,8 +172,9 @@ void SubController::readData(QByteArray qba)
         int pid, status, nr;
         QString arg1, arg2, arg3, arg4, arg5, arg6;
         int mask, nextMove, blockSig, extraOption;
-        iN >> pid >> status >> nr >> arg1 >> arg2 >> arg3 >> arg4 >> arg5 >> arg6 >> mask >> nextMove >> blockSig >> extraOption;
-        emit pushEvent(pid, status, nr, arg1, arg2, arg3, arg4, arg5, arg6, mask, nextMove, blockSig, extraOption);
+        bool mode;
+        iN >> mode >> pid >> status >> nr >> arg1 >> arg2 >> arg3 >> arg4 >> arg5 >> arg6 >> mask >> nextMove >> blockSig >> extraOption;
+        emit pushEvent(mode, pid, status, nr, arg1, arg2, arg3, arg4, arg5, arg6, mask, nextMove, blockSig, extraOption);
     }
 }
 

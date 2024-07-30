@@ -39,13 +39,20 @@ void Controller::createDefaultRule(int option)
     for(int i = 0; i <= 453; i++)
     {
         temp = QString::number(i);
+        QJsonArray temparr;
+        temparr.append(QJsonValue(""));
+        temparr.append(QJsonValue(""));
+        temparr.append(QJsonValue(0));
+        temparr.append(QJsonValue(""));
         if(!Watcher::seccomp_force_enable_calls(i))
         {
-            table.insert(temp, option);
+            temparr[0] = QJsonValue(option);
+            table.insert(temp, temparr);
         }
         else
         {
-            table.insert(temp, JAIL_SYS_CALL_PASS_FOREVER);
+            temparr[0] = QJsonValue(JAIL_SYS_CALL_PASS_FOREVER);
+            table.insert(temp, temparr);
         }
     }
     QJsonDocument doc(table);
@@ -83,25 +90,20 @@ QJsonArray Controller::checkRule(int n)
 {
     QString key;
     key = QString::number(n);
+    qDebug() << key;
     if(currentRules.contains(key))
     {
         QJsonValue val = currentRules.value(key);
-        if(val.isArray())
-        {
-            return val.toArray();
-        }
-        else
-        {
-            QJsonArray arr;
-            arr.append(val);
-            return arr;
-        }
+        return val.toArray();
     }
     else
     {
         QJsonValue val = JAIL_SYS_CALL_ABORT_FOREVER;
         QJsonArray arr;
         arr.append(val);
+        arr.append(QJsonValue(""));
+        arr.append(QJsonValue(0));
+        arr.append(QJsonValue(""));
         return arr;
     }
 }
@@ -112,15 +114,21 @@ int Controller::updateRule(int n, int option, QString script)
     if(Watcher::seccomp_force_enable_calls(n)) return 0;
     if(currentRules.contains(nr))
     {
+        QJsonArray arr = currentRules[nr].toArray();
         if(option < 5)
-        currentRules[nr] = option;
+        {
+            arr[0] = option;
+            arr[1] = QJsonValue("");
+        }
         else
         {
             QByteArray qba = script.toUtf8();
             QString script_base64 = qba.toBase64();
-            QJsonArray temp = {5, script_base64};
-            currentRules[nr] = temp;
+            //QJsonArray temp = {5, script_base64};
+            arr[0] = 5;
+            arr[1] = QJsonValue(script_base64);
         }
+        currentRules[nr] = arr;
         emit currentRuleChanged();
         return 1;
     }
@@ -129,6 +137,34 @@ int Controller::updateRule(int n, int option, QString script)
         return 0;
     }
 }
+
+int Controller::updateExitRule(int n, int option, long newReval)
+{
+    QString nr = QString::number(n);
+    if(Watcher::seccomp_force_enable_calls(n)) return 0;
+    if(currentRules.contains(nr))
+    {
+        QJsonArray arr = currentRules[nr].toArray();
+        arr[2] = option;
+        if(option != JAIL_SYS_CALL_EXIT_CHANGE)
+        {
+            arr[3] = QJsonValue("");
+        }
+        else
+        {
+            qint64 v = newReval;
+            arr[3] = QJsonValue(v);
+        }
+        currentRules[nr] = arr;
+        emit currentRuleChanged();
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 
 QString Controller::qmlFSN(int nr)
 {
@@ -207,6 +243,7 @@ int Controller::startTrace(QString path, QString args)
         connect(watcher, &Watcher::createProcTree, this, &Controller::drawProcTree);
         connect(this, &Controller::startInjector, watcher, &Watcher::injector);
         connect(this, &Controller::pushEvent, watcher, &Watcher::dealNow);
+        connect(watcher, &Watcher::handleSyscallExit, this, &Controller::notifySyscallExit);
         emit st(path, list, currentRules);
     }
     else
@@ -307,18 +344,18 @@ QString Controller::findSyscallName(int nr)
     return sname;
 }
 
-void Controller::getCommand(int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption)
+void Controller::getCommand(bool mode, int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption)
 {
     if(!isRemote)
     {
-        emit pushEvent(pid, status, nr, arg1, arg2, arg3, arg4, arg5, arg6, mask, nextMove, blockSig, extraOption);
+        emit pushEvent(mode, pid, status, nr, arg1, arg2, arg3, arg4, arg5, arg6, mask, nextMove, blockSig, extraOption);
     }
     else
     {
         DataPackage pkg;
         pkg.type = COMMAND_TO_REMOTE_PUSH_EVENT;
         QDataStream out(&pkg.data, QIODevice::WriteOnly);
-        out << pid << status << nr << arg1 << arg2 << arg3 << arg4 << arg5 << arg6 << mask << nextMove << blockSig << extraOption;
+        out << mode << pid << status << nr << arg1 << arg2 << arg3 << arg4 << arg5 << arg6 << mask << nextMove << blockSig << extraOption;
         emit sendDataToServerR(pkg);
     }
 }
@@ -411,6 +448,29 @@ void Controller::notifySyscall(int pid, int status, seccomp_data data, QList<QSt
     }
 }
 
+void Controller::notifySyscallExit(int pid, int nr, long syscallreval, int remote_script_resp)
+{
+    QString sname;
+    QJsonArray ja = checkRule(nr);
+    int resp_type = remote_script_resp == -1?ja[2].toInt():remote_script_resp;
+    qDebug() << ja[0] << ja[1] << ja[2] << ja[3];
+    switch(resp_type)
+    {
+    case JAIL_SYS_CALL_EXIT_DEFAULT:
+        stopBlockingExit(isRemote, SYSMSG_KEEP_ORIG_REVAL, SYSMSG_STOP_BLOCKING);
+        break;
+    case JAIL_SYS_CALL_EXIT_CHANGE:
+        stopBlockingExit(isRemote, SYSMSG_CHANGE_REVAL, SYSMSG_STOP_BLOCKING, syscallreval);
+        break;
+    case JAIL_SYS_CALL_EXIT_NOTIFY:
+
+        sname = findSyscallName(nr);
+        emit showSyscallExit(pid, sname, nr, QString::number(syscallreval));
+        stopBlockingExit(isRemote, 0, SYSMSG_DEAL_LATER);
+        break;
+    }
+}
+
 void Controller::notifyPeekData(int pid, int num, long data)
 {
     char temp[9];
@@ -434,6 +494,24 @@ void Controller::stopBlocking(bool mode, int option, int blockState, int arg)
         pkg.type = COMMAND_TO_REMOTE_STOP_BLOCKING;
         QDataStream out(&pkg.data, QIODevice::WriteOnly);
         out << option << blockState << arg;
+        emit sendDataToServerR(pkg);
+    }
+}
+
+void Controller::stopBlockingExit(bool mode, int option, int blockState, long newval)
+{
+    if(!mode)
+    {
+        watcher->nextMove_exit = option;
+        watcher->blockSig_exit = blockState;
+        watcher->newReval = newval;
+    }
+    else
+    {
+        DataPackage pkg;
+        pkg.type = COMMAND_TO_REMOTE_STOP_BLOCKING_EXIT;
+        QDataStream out(&pkg.data, QIODevice::WriteOnly);
+        out << option << blockState << qint64(newval);
         emit sendDataToServerR(pkg);
     }
 }

@@ -156,7 +156,7 @@ FluContentPage{
                     controller.startTrace(home_textbox_program_remote.text, home_textbox_args_remote.text)
                     console.log(123)
                     enabled = false
-                    home_btn_stop.enabled = true
+                    home_btn_stop_remote.enabled = true
                     home_btn_to_local.enabled = false
                 }
             }
@@ -173,7 +173,7 @@ FluContentPage{
                 onClicked: {
                     controller.stopTrace()
                     enabled = false
-                    home_btn_start_local.enabled = true
+                    home_btn_start_remote.enabled = true
                 }
             }
 
@@ -236,7 +236,7 @@ FluContentPage{
                         for(let i=0; i<7; i++) {
                             mask += (getmask(orig_data[i], new_data[i]) << i)
                         }
-                        controller.getCommand(Number(obj.pid), Number(obj.status), Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, mask, 1, 0, 0)
+                        controller.getCommand(1, Number(obj.pid), Number(obj.status), Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, mask, 1, 0, 0)
                         removelater.targetrow = row
                         removelater.restart()
                     }
@@ -245,7 +245,7 @@ FluContentPage{
                     text: qsTr("Abort")
                     onClicked: {
                         var obj = table_view.getRow(row)
-                        controller.getCommand(Number(obj.pid), Number(obj.status), Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, 0, 0, 0, 0)
+                        controller.getCommand(1, Number(obj.pid), Number(obj.status), Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, 0, 0, 0, 0)
                         removelater.targetrow = row
                         removelater.restart()
                     }
@@ -261,7 +261,7 @@ FluContentPage{
                         for(let i=0; i<7; i++) {
                             mask += (getmask(orig_data[i], new_data[i]) << i)
                         }
-                        controller.getCommand(Number(obj.pid), Number(obj.status), Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, mask, 1, 0, 2)
+                        controller.getCommand(1, Number(obj.pid), Number(obj.status), Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, mask, 1, 0, 2)
                         removelater.targetrow = row
                         removelater.restart()
                     }
@@ -271,7 +271,7 @@ FluContentPage{
                     onClicked: {
                         var obj = table_view.getRow(row)
                         controller.updateRule(Number(obj.orig_nr), 1)
-                        controller.getCommand(Number(obj.pid), Number(obj.status),  Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, 0, 0, 0, 0)
+                        controller.getCommand(1, Number(obj.pid), Number(obj.status),  Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, 0, 0, 0, 0)
                         removelater.targetrow = row
                         removelater.restart()
                     }
@@ -281,6 +281,39 @@ FluContentPage{
                     onClicked: {
                         var obj = table_view.getRow(row)
                         FluRouter.navigate("/syscallDetailWindow", {"pid": Number(obj.pid), "addrs": [obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6], "ctrl": controller})
+                    }
+                }
+            }
+        }
+    }
+    Component{
+        id:com_option_exit
+        Item {
+            FluDropDownButton{
+                anchors.centerIn: parent
+                width: parent.width * 0.8
+                height: parent.height * 0.8
+                text: qsTr("Select an action")
+                FluMenuItem{
+                    text: qsTr("Do nothing")
+                    onClicked: {
+                        var obj = table_view.getRow(row)
+                        controller.getCommand(0, Number(obj.pid), Number(obj.status), Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, 0, 5, 0, 0)
+                        removelater.targetrow = row
+                        removelater.restart()
+                    }
+                }
+                FluMenuItem{
+                    text: qsTr("Change to current val")
+                    onClicked: {
+                        var obj = table_view.getRow(row)
+                        var orig_data = obj.orig_arg1
+                        var new_data = obj.arg1
+                        var mask = 0
+                        mask = getmask(orig_data, new_data)
+                        controller.getCommand(0, Number(obj.pid), Number(obj.status), Number(obj.nr), obj.arg1, obj.arg2, obj.arg3, obj.arg4, obj.arg5, obj.arg6, mask, 6, 0, 0)
+                        removelater.targetrow = row
+                        removelater.restart()
                     }
                 }
             }
@@ -389,7 +422,7 @@ FluContentPage{
             }
         ]
     }
-    function getObject(pid, status, name, nr, arg1, arg2, arg3, arg4, arg5, arg6){
+    function getObject(mode, pid, status, name, nr, arg1, arg2, arg3, arg4, arg5, arg6){
         return {
             pid: pid,
             nr: nr,
@@ -401,7 +434,7 @@ FluContentPage{
             arg5: arg5,
             arg6: arg6,
             status: status,
-            action: table_view.customItem(com_option),
+            action: table_view.customItem(mode?com_option_exit:com_option),
             orig_nr: nr,
             orig_arg1: arg1,
             orig_arg2: arg2,
@@ -417,8 +450,13 @@ FluContentPage{
     Connections {
         target: controller
         function onShowSyscall(pid, status, name, nr, arg1, arg2, arg3, arg4, arg5, arg6) {
-            table_view.appendRow(getObject(pid, status, name, nr, arg1, arg2, arg3, arg4, arg5, arg6))
+            table_view.appendRow(getObject(0, pid, status, name, nr, arg1, arg2, arg3, arg4, arg5, arg6))
         }
+
+        function onShowSyscallExit(pid, name, nr, syscallreval) {
+            table_view.appendRow(getObject(1, pid, -1, (name + "(EXIT)"), nr, syscallreval, -1, -1, -1, -1, -1))
+        }
+
         function onIsTracingchanged(val) {
             if(val == 0) {
                 home_btn_start.enabled = true

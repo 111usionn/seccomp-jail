@@ -14,6 +14,7 @@ Watcher::Watcher(bool mode, QObject *parent)
 {
     endFlag = 1;
     blockSig = 1;
+    blockSig_exit = 1;
     addroffset = 0;
     deref_offset = 1;
     settings.enableLDPRELOAD = 1;
@@ -41,9 +42,10 @@ void Watcher::proactiveRestart(int pid)
     }
 }
 
-void Watcher::dealNow(int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption)
+void Watcher::dealNow(bool mode, int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption)
 {
     syscall_info temp;
+    temp.mode = mode?syscall_info::ENTRY:syscall_info::EXIT;
     temp.pid = pid;
     temp.status = status;
     temp.nr = nr;
@@ -57,7 +59,6 @@ void Watcher::dealNow(int pid, int status, int nr, QString arg1, QString arg2, Q
     temp.nextMove = nextMove;
     temp.blockSig = blockSig;
     temp.extraOption = extraOption;
-    qDebug() << temp.nextMove << temp.blockSig << temp.extraOption;
     notified_events.enqueue(temp);
 }
 
@@ -97,7 +98,8 @@ void Watcher::injector(int pid, int nr, long arg1, long arg2, long arg3, long ar
             }
             else
             {
-                syscall_info tempinfo = {0, argc, nr, arg1, arg2, arg3, arg4, arg5, arg6};
+                syscall_info tempinfo = {syscall_info::ENTRY, 0, argc, nr, arg1, arg2, arg3, arg4, arg5, arg6};
+                //                       /*      useless      *//*                 useful                   */
                 inject_events.insert(pid, tempinfo);
                 has_trap.insert(pid, 1);
                 //push event
@@ -107,7 +109,7 @@ void Watcher::injector(int pid, int nr, long arg1, long arg2, long arg3, long ar
     }
     if(!stat.si_status)
     {
-        syscall_info tempinfo = {0, argc, nr, arg1, arg2, arg3, arg4, arg5, arg6};
+        syscall_info tempinfo = {syscall_info::ENTRY, 0, argc, nr, arg1, arg2, arg3, arg4, arg5, arg6};
         inject_events.insert(pid, tempinfo);
         has_trap.insert(pid, 1);
         //push event
@@ -250,128 +252,186 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
             if(!notified_events.isEmpty())
             {
                 syscall_info info = notified_events.dequeue();
-                qDebug() << "notified";
-                if(info.blockSig == SYSMSG_PEEK_ADDR)
+                if(info.mode == syscall_info::ENTRY)
                 {
-                    for(int i = 0; i <= info.extraOption; i++)
+                    if(info.blockSig == SYSMSG_PEEK_ADDR)
                     {
-                        long result;
-                        result = ptrace(PTRACE_PEEKDATA, info.pid, info.args[nextMove] + i * 8, NULL);
-                        emit sendPeekData(info.pid, i, result);
-                    }
-                }
-                else
-                {
-                    QString action;
-                    waiting_for_inject(info.pid);
-                    long args[7] = {info.nr, info.args[0], info.args[1], info.args[2], info.args[3], info.args[4], info.args[5]};
-                    int des[7] = {8 * ORIG_RAX, 8 * RDI, 8 * RSI, 8 * RCX, 8 * RDX, 8 * R8, 8 * R9};
-                    for(int i = 0; i < 6; i++)
-                    {
-                        if(((info.mask >> i) & 1))
+                        for(int i = 0; i <= info.extraOption; i++)
                         {
-                            ptrace(PTRACE_POKEUSER, info.pid, des[i], args[i]);
-                        }
-                    }
-                    if(info.nextMove == 1)//pass
-                    {
-                        if(info.extraOption == 0)
-                        {
-                            action = "pass by user";
-                        }
-                        else if(info.extraOption == 1)
-                        {
-                            action = "pass according to rules";
-                        }
-                        else
-                        {
-                            action = "pass by user and add rule";
+                            long result;
+                            result = ptrace(PTRACE_PEEKDATA, info.pid, info.args[nextMove] + i * 8, NULL);
+                            emit sendPeekData(info.pid, i, result);
                         }
                     }
                     else
                     {
-                        if(info.extraOption == 0)
+                        QString action;
+                        waiting_for_inject(info.pid);
+                        long args[7] = {info.nr, info.args[0], info.args[1], info.args[2], info.args[3], info.args[4], info.args[5]};
+                        int des[7] = {8 * ORIG_RAX, 8 * RDI, 8 * RSI, 8 * RCX, 8 * RDX, 8 * R8, 8 * R9};
+                        for(int i = 0; i < 6; i++)
                         {
-                            action = "abort by user";
+                            if(((info.mask >> i) & 1))
+                            {
+                                ptrace(PTRACE_POKEUSER, info.pid, des[i], args[i]);
+                            }
                         }
-                        else if(info.extraOption == 1)
+                        if(info.nextMove == 1)//pass
                         {
-                            action = "abort according to rules";
+                            if(info.extraOption == 0)
+                            {
+                                action = "pass by user";
+                            }
+                            else if(info.extraOption == 1)
+                            {
+                                action = "pass according to rules";
+                            }
+                            else
+                            {
+                                action = "pass by user and add rule";
+                            }
                         }
                         else
                         {
-                            action = "abort by user and add rule";
+                            if(info.extraOption == 0)
+                            {
+                                action = "abort by user";
+                            }
+                            else if(info.extraOption == 1)
+                            {
+                                action = "abort according to rules";
+                            }
+                            else
+                            {
+                                action = "abort by user and add rule";
+                            }
                         }
-                    }
-                    QString log;
-                    if(info.nextMove != 2)log = QDateTime::currentDateTime().toString() + " pid: " + QString::number(info.pid) + " nr: " + QString::number(info.nr) + "(" +
-                              findSyscallName(info.nr) + ")" +
-                              " arg1: " + QString::number(info.args[0]) + " arg2: " + QString::number(info.args[1]) + " arg3: " + QString::number(info.args[2]) + " arg4: " + QString::number(info.args[3]) +
-                              " arg5: " + QString::number(info.args[4]) + " arg6: " + QString::number(info.args[5]) + " action: " + action;
-                    if(info.status >> 8 == (SIGTRAP | (PTRACE_EVENT_EXEC<<8)))
-                    {
-                        emit createProcTree(child_pid);
-                    }
-                    if(!info.nextMove)
-                    {
-                        ptrace(PTRACE_POKEUSER, info.pid, 8 * ORIG_RAX, -1);
-                    }
-                    else if(info.nextMove != 2)
-                    {
-                        int isfork = 0;
-                        if(info.nr != SCMP_SYS(fork) && info.nr != SCMP_SYS(vfork) && info.nr != SCMP_SYS(clone))
-                            ptrace(PTRACE_SYSCALL, info.pid, 0, 0);
-                        else
+                        QString log;
+                        if(info.nextMove != 2)log = QDateTime::currentDateTime().toString() + " pid: " + QString::number(info.pid) + " nr: " + QString::number(info.nr) + "(" +
+                                  findSyscallName(info.nr) + ")" +
+                                  " arg1: " + QString::number(info.args[0]) + " arg2: " + QString::number(info.args[1]) + " arg3: " + QString::number(info.args[2]) + " arg4: " + QString::number(info.args[3]) +
+                                  " arg5: " + QString::number(info.args[4]) + " arg6: " + QString::number(info.args[5]) + " action: " + action;
+                        if(info.status >> 8 == (SIGTRAP | (PTRACE_EVENT_EXEC<<8)))
                         {
-                            isfork = 1;
-                            ptrace(PTRACE_CONT, info.pid, 0, 0);
-                        }
-                        int status = 0;
-                        waitpid(info.pid, &status, 0);
-                        if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_FORK<<8)))
-                        {
-                            pid_t new_proc_pid = 0;
-                            int new_status;
-                            ptrace(PTRACE_GETEVENTMSG, info.pid, 0, &new_proc_pid);
-                            waitpid(new_proc_pid, &new_status, 0);
-                            //ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
-                            ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
-                            ptrace(PTRACE_SYSCALL, info.pid, 0, 0);
                             emit createProcTree(child_pid);
                         }
-                        else if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_VFORK<<8)))
+
+                        bool catch_reval = 0;
+                        if(!info.nextMove)
                         {
-                            pid_t new_proc_pid = 0;
-                            int new_status;
-                            ptrace(PTRACE_GETEVENTMSG, info.pid, 0, &new_proc_pid);
-                            waitpid(new_proc_pid, &new_status, 0);
-                            //ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
-                            ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
+                            catch_reval = 1;
+                            ptrace(PTRACE_POKEUSER, info.pid, 8 * ORIG_RAX, -1);
                             ptrace(PTRACE_SYSCALL, info.pid, 0, 0);
-                            emit createProcTree(child_pid);
-                        }
-                        else if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE<<8)))
-                        {
-                            pid_t new_proc_pid = 0;
-                            int new_status;
-                            ptrace(PTRACE_GETEVENTMSG, info.pid, 0, &new_proc_pid);
-                            waitpid(new_proc_pid, &new_status, 0);
-                            //ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
-                            ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
-                            ptrace(PTRACE_SYSCALL, info.pid, 0, 0);
-                            emit createProcTree(child_pid);
-                        }
-                        if(isfork)
-                        {
                             waitpid(info.pid, 0, 0);
                         }
-                        long syscallreval = ptrace(PTRACE_PEEKUSER, info.pid, 8 * RAX, 0);
-                        QString reval = " returnval: " + QString::number(syscallreval);
-                        log += reval;
+                        else if(info.nextMove != 2)
+                        {
+                            catch_reval = 1;
+                            int isfork = 0;
+                            if(info.nr != SCMP_SYS(fork) && info.nr != SCMP_SYS(vfork) && info.nr != SCMP_SYS(clone))
+                                ptrace(PTRACE_SYSCALL, info.pid, 0, 0);
+                            else
+                            {
+                                isfork = 1;
+                                ptrace(PTRACE_CONT, info.pid, 0, 0);
+                            }
+                            int status = 0;
+                            waitpid(info.pid, &status, 0);
+                            if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_FORK<<8)))
+                            {
+                                pid_t new_proc_pid = 0;
+                                int new_status;
+                                ptrace(PTRACE_GETEVENTMSG, info.pid, 0, &new_proc_pid);
+                                waitpid(new_proc_pid, &new_status, 0);
+                                //ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
+                                ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
+                                ptrace(PTRACE_SYSCALL, info.pid, 0, 0);
+                                emit createProcTree(child_pid);
+                            }
+                            else if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_VFORK<<8)))
+                            {
+                                pid_t new_proc_pid = 0;
+                                int new_status;
+                                ptrace(PTRACE_GETEVENTMSG, info.pid, 0, &new_proc_pid);
+                                waitpid(new_proc_pid, &new_status, 0);
+                                //ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
+                                ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
+                                ptrace(PTRACE_SYSCALL, info.pid, 0, 0);
+                                emit createProcTree(child_pid);
+                            }
+                            else if(status >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE<<8)))
+                            {
+                                pid_t new_proc_pid = 0;
+                                int new_status;
+                                ptrace(PTRACE_GETEVENTMSG, info.pid, 0, &new_proc_pid);
+                                waitpid(new_proc_pid, &new_status, 0);
+                                //ptrace(PTRACE_SETOPTIONS, new_proc_pid, 0,  ptrace_mask);
+                                ptrace(PTRACE_CONT, new_proc_pid, 0, 0);
+                                ptrace(PTRACE_SYSCALL, info.pid, 0, 0);
+                                emit createProcTree(child_pid);
+                            }
+                            if(isfork)
+                            {
+                                waitpid(info.pid, 0, 0);
+                            }
+                        }
+                        if(catch_reval)
+                        {
+                            long syscallreval = ptrace(PTRACE_PEEKUSER, info.pid, 8 * RAX, 0);
+                            emit handleSyscallExit(info.pid, info.nr, syscallreval);
+                            while(blockSig_exit)
+                            {
+                                if(blockSig_exit == SYSMSG_DEAL_LATER)
+                                {
+                                    break;
+                                }
+                            }
+                            if(blockSig_exit == SYSMSG_DEAL_LATER)
+                            {
+                                qDebug() << "deal later";
+                                QString reval = " returnval: not decided";
+                                log += reval;
+                            }
+                            else
+                            {
+                                QString reval = " returnval: ";
+                                if(nextMove_exit == SYSMSG_KEEP_ORIG_REVAL)
+                                {
+                                    reval += QString::number(syscallreval);
+                                }
+                                else if(nextMove_exit == SYSMSG_CHANGE_REVAL)
+                                {
+                                    ptrace(PTRACE_POKEUSER, info.pid, 8 * RAX, newReval);
+                                    reval += "was changed to " + QString::number(newReval);
+                                }
+                                log += reval;
+                                ptrace(PTRACE_CONT, info.pid, 0, 0);
+                            }
+                            blockSig_exit = SYSMSG_KEEP_BLOCKING;
+                        }
+                        else
+                        {
+                            ptrace(PTRACE_CONT, info.pid, 0, 0);
+                        }
+                        if(nextMove != 2)emit writeLog(log);
+
+                        emit processRestarted(info.pid);
                     }
-                    if(nextMove != 2)emit writeLog(log);
+                }
+                else
+                {
+                    waiting_for_inject(info.pid);
+                    QString reval = " reval";
+                    if(info.mask)
+                    {
+                        ptrace(PTRACE_POKEUSER, info.pid, 8 * RAX, info.args[0]);
+                        reval += " was changed to: ";
+                    }
+                    QString log;
+                    log = QDateTime::currentDateTime().toString() + " pid: " + QString::number(info.pid) + " nr: " + QString::number(info.nr) + "(" +
+                          findSyscallName(info.nr) + "_EXIT" + ")" + reval + QString::number(info.args[0]);
+                    emit writeLog(log);
                     ptrace(PTRACE_CONT, info.pid, 0, 0);
-                    emit processRestarted(info.pid);
                 }
                 continue;
             }
@@ -406,6 +466,7 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                     data.nr = SCMP_SYS(execve);
                     //isExec = 1;
                 }
+                qDebug() << data.nr;
                 QString darg[6];
                 for(int i = 0; i <= 5; i++)
                 {
@@ -486,12 +547,17 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                 {
                     emit createProcTree(child_pid);
                 }
+                bool catch_reval = 0;
                 if(!nextMove)
                 {
+                    catch_reval = 1;
                     ptrace(PTRACE_POKEUSER, notifypid, 8 * ORIG_RAX, -1);
+                    ptrace(PTRACE_SYSCALL, notifypid, 0, 0);
+                    waitpid(notifypid, 0, 0);
                 }
                 else if(nextMove != 2)
                 {
+                    catch_reval = 1;
                     int isfork = 0;
                     if(data.nr != SCMP_SYS(fork) && data.nr != SCMP_SYS(vfork) && data.nr != SCMP_SYS(clone))
                     ptrace(PTRACE_SYSCALL, notifypid, 0, 0);
@@ -539,9 +605,44 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                     {
                         waitpid(notifypid, 0, 0);
                     }
+                }
+                if(catch_reval)
+                {
                     long syscallreval = ptrace(PTRACE_PEEKUSER, notifypid, 8 * RAX, 0);
-                    QString reval = " returnval: " + QString::number(syscallreval);
-                    log += reval;
+                    emit handleSyscallExit(notifypid, data.nr, syscallreval);
+                    while(blockSig_exit)
+                    {
+                        if(blockSig_exit == SYSMSG_DEAL_LATER)
+                        {
+                            break;
+                        }
+                    }
+                    if(blockSig_exit == SYSMSG_DEAL_LATER)
+                    {
+                        qDebug() << "deal later1";
+                        QString reval = " returnval: not decided";
+                        log += reval;
+                    }
+                    else
+                    {
+                        QString reval = " returnval: ";
+                        if(nextMove_exit == SYSMSG_KEEP_ORIG_REVAL)
+                        {
+                            reval += QString::number(syscallreval);
+                        }
+                        else if(nextMove_exit == SYSMSG_CHANGE_REVAL)
+                        {
+                            ptrace(PTRACE_POKEUSER, notifypid, 8 * RAX, newReval);
+                            reval += QString::number(newReval);
+                        }
+                        log += reval;
+                        ptrace(PTRACE_CONT, notifypid, 0, 0);
+                    }
+                    blockSig_exit = SYSMSG_KEEP_BLOCKING;
+                }
+                else
+                {
+                    ptrace(PTRACE_CONT, notifypid, 0, 0);
                 }
                 if(nextMove != 2)emit writeLog(log);
                 /*if(isExec)
@@ -559,7 +660,6 @@ void Watcher::createPuppet(const QString path, QStringList args, QJsonObject r)
                         emit sendStdOutput(msg);
                     });
                 }*/
-                ptrace(PTRACE_CONT, notifypid, 0, 0);
                 emit processRestarted(notifypid);
             }
             else if(WIFSTOPPED(status) && WSTOPSIG(status) == SIGTRAP)//int3

@@ -15,6 +15,7 @@ public:
 signals:
     void st(QString path, QStringList args, QJsonObject r);
     void showSyscall(int pid, int status, QString syscall_name, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6);
+    void showSyscallExit(int pid, QString syscall_name, int nr, QString reval);
     void showPeekData(int pid, int num, long data, QString strData);
     void writeLog(int pid, QString syscallinfo, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int action);
     void showLog(QString log);
@@ -23,7 +24,7 @@ signals:
     void qmlDrawProcTree(QString tree);
     void startInjector(int pid, int nr, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, int argc);
     void threadQuit();
-    void pushEvent(int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption);
+    void pushEvent(bool mode, int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption);
     void sendDataToServerR(DataPackage pkg);
 public slots:
     int startTrace(QString path, QString args);
@@ -37,6 +38,7 @@ public slots:
     void createDefaultRule(int option);
     QJsonArray checkRule(int n);
     int updateRule(int n, int option, QString script_base64 = "");
+    int updateExitRule(int n, int option, long newReval = 0);
     void saveCurrentRule(QString saveAs = "");
     void notifyPeekData(int pid, int num, long data);
     int haveCurrentRule();
@@ -45,8 +47,9 @@ public slots:
     QString qmlFSN(int nr);
     void drawProcTree(int pid);
     void startInject(int pid, int nr, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, int argc);
-    void getCommand(int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption);
+    void getCommand(bool mode, int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption);
     void isRemote_setter(bool val);
+    void notifySyscallExit(int pid, int nr, long syscallreval, int remote_script_resp = -1);
 
 private:
     QThread* thread;
@@ -60,6 +63,7 @@ private:
     MyTcpSocket* myTcpSocket;
     bool isRemote;
     void stopBlocking(bool mode, int option, int blockState, int arg);
+    void stopBlockingExit(bool mode, int option, int blockState, long newval = 0);
 };
 
 #endif // CONTROLLER_H

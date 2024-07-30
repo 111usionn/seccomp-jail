@@ -40,6 +40,16 @@ FluContentPage{
                 return "Script"
         }
     }
+    function getRuleNameExit(num) {
+        switch(num) {
+            case 0:
+                return "Default"
+            case 1:
+                return "Change"
+            case 2:
+                return "Notify"
+        }
+    }
     onNameKeywordChanged: {
         table_view.filter(function(item){
             if(item.name.includes(nameKeyword)){
@@ -196,6 +206,12 @@ FluContentPage{
         ListElement {name: "abort forever"; val: 4}
         ListElement {name: "script"; val: 5}
     }
+    ListModel {
+        id: list_changeto_exit
+        ListElement {name: "default"; val: 0}
+        ListElement {name: "change"; val: 1}
+        ListElement {name: "notify"; val: 2}
+    }
     FluContentDialog{
         id: rules_dialog_edit_script
         property int target_nr: 0
@@ -252,6 +268,53 @@ FluContentPage{
             }
         }
     }
+    FluContentDialog{
+        id: rules_dialog_edit_reval
+        property int target_nr: 0
+        property int returnval
+        title: qsTr("Custom return value")
+        message: qsTr("Input your return value here")
+        negativeText: qsTr("Cancel")
+        signal displayScript(string s)
+        contentDelegate: Component{
+            Item{
+                implicitWidth: parent.width
+                x: 20
+                FluTextBox {
+                    id: script_input
+                    width: parent.width - 50
+                    Component.onCompleted: {
+                        rules_dialog_edit_reval.script = Qt.binding(function(){return text})
+                    }
+                    Connections {
+                        target: rules_dialog_edit_script
+                        function onDisplayScript(s) {
+                            script_input.text = s
+                        }
+                    }
+                }
+            }
+        }
+
+        onOpened: {
+            if (typeof json[target_nr] == "object") {
+                displayScript(json[target_nr][3])
+            }
+        }
+        onNegativeClicked: {
+            showError(qsTr("Canceled"))
+        }
+        positiveText: qsTr("Save")
+        onPositiveClicked: {
+            var reval = controller.updateExitRule(target_nr, 2, returnval)
+            if(reval == 1) {
+                showSuccess(qsTr("Return value saved"))
+            }
+            else {
+                showError(qsTr("Failed, this is a force enabled syscall"))
+            }
+        }
+    }
     Component{
         id:com_changeto
         Item{
@@ -265,11 +328,38 @@ FluContentPage{
                     valueRole: "val"
                 }
                 FluFilledButton{
-                    text: qsTr("Update")
+                    text: qsTr("Update entry rule")
                     onClicked: {
                         var obj = table_view.getRow(row)
                         if(rule_selecter.currentValue < 5) {
                             var reval = controller.updateRule(obj.nr, rule_selecter.currentValue)
+                            if(reval == 1) {
+                                showSuccess(qsTr("Updated"))
+                            }
+                            else {
+                                showError(qsTr("Failed, this is a force enabled syscall"))
+                            }
+                        }
+                        else {
+                            rules_dialog_edit_script.target_nr = obj.nr
+                            rules_dialog_edit_script.open()
+                            //reval = controller.updateRule(obj.nr, rule_selecter.currentValue, script)
+                        }
+                    }
+                }
+                FluComboBox{
+                    id: exit_rule_selecter
+                    editable: false
+                    model: list_changeto_exit
+                    textRole: "name"
+                    valueRole: "val"
+                }
+                FluFilledButton{
+                    text: qsTr("Update exit rule")
+                    onClicked: {
+                        var obj = table_view.getRow(row)
+                        if(rule_selecter.currentValue != 1) {
+                            var reval = controller.updateExitRule(obj.nr, exit_rule_selecter.currentValue)
                             if(reval == 1) {
                                 showSuccess(qsTr("Updated"))
                             }
@@ -384,31 +474,31 @@ FluContentPage{
             {
                 title: qsTr("nr"),
                 dataIndex: 'nr',
-                width:150,
-                minimumWidth:100,
-                maximumWidth:200
+                width:50,
+                minimumWidth:50,
+                maximumWidth:50
             },
             {
                 title: table_view.customItem(com_column_filter_name,{title:qsTr("Name")}),
                 dataIndex: 'name',
                 readOnly: true,
-                width:200,
+                width:100,
                 minimumWidth:100,
                 maximumWidth:300
             },
             {
                 title: qsTr("status"),
                 dataIndex: 'status',
-                width:200,
-                minimumWidth:150,
+                width:160,
+                minimumWidth:160,
                 maximumWidth:300,
             },
             {
                 title: qsTr("Change to"),
                 dataIndex: 'combobox',
-                width:300,
-                minimumWidth:300,
-                maximumWidth:300,
+                width:600,
+                minimumWidth:600,
+                maximumWidth:600,
             }
         ]
     }
@@ -417,7 +507,7 @@ FluContentPage{
         return {
             nr: num,
             name: controller.qmlFSN(num),
-            status: getRuleName((typeof json[num] == "object")?json[num][0]:json[num]),
+            status: getRuleName(json[num][0]) + "|" + getRuleNameExit(json[num][2]),
             combobox: table_view.customItem(com_changeto),
             _minimumHeight:50,
             _key:FluTools.uuid()
