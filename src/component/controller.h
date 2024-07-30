@@ -38,7 +38,7 @@ public slots:
     void createDefaultRule(int option);
     QJsonArray checkRule(int n);
     int updateRule(int n, int option, QString script_base64 = "");
-    int updateExitRule(int n, int option, long newReval = 0);
+    int updateExitRule(int n, int option, QString newReval = "");
     void saveCurrentRule(QString saveAs = "");
     void notifyPeekData(int pid, int num, long data);
     int haveCurrentRule();

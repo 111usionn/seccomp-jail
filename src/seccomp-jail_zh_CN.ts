@@ -337,7 +337,7 @@
     <message>
         <location filename="qml/page/T_Rules.qml" line="90"/>
         <location filename="qml/page/T_Rules.qml" line="257"/>
-        <location filename="qml/page/T_Rules.qml" line="305"/>
+        <location filename="qml/page/T_Rules.qml" line="306"/>
         <source>Canceled</source>
         <translation type="unfinished"></translation>
     </message>
@@ -360,7 +360,7 @@
         <location filename="qml/page/T_Rules.qml" line="119"/>
         <location filename="qml/page/T_Rules.qml" line="154"/>
         <location filename="qml/page/T_Rules.qml" line="259"/>
-        <location filename="qml/page/T_Rules.qml" line="307"/>
+        <location filename="qml/page/T_Rules.qml" line="308"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
@@ -407,9 +407,9 @@
     </message>
     <message>
         <location filename="qml/page/T_Rules.qml" line="267"/>
-        <location filename="qml/page/T_Rules.qml" line="314"/>
-        <location filename="qml/page/T_Rules.qml" line="340"/>
-        <location filename="qml/page/T_Rules.qml" line="367"/>
+        <location filename="qml/page/T_Rules.qml" line="315"/>
+        <location filename="qml/page/T_Rules.qml" line="341"/>
+        <location filename="qml/page/T_Rules.qml" line="368"/>
         <source>Failed, this is a force enabled syscall</source>
         <translation type="unfinished"></translation>
     </message>
@@ -424,49 +424,49 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="311"/>
+        <location filename="qml/page/T_Rules.qml" line="312"/>
         <source>Return value saved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="331"/>
+        <location filename="qml/page/T_Rules.qml" line="332"/>
         <source>Update entry rule</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="337"/>
-        <location filename="qml/page/T_Rules.qml" line="364"/>
+        <location filename="qml/page/T_Rules.qml" line="338"/>
+        <location filename="qml/page/T_Rules.qml" line="365"/>
         <source>Updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="358"/>
+        <location filename="qml/page/T_Rules.qml" line="359"/>
         <source>Update exit rule</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="410"/>
+        <location filename="qml/page/T_Rules.qml" line="411"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="436"/>
-        <location filename="qml/page/T_Rules.qml" line="482"/>
+        <location filename="qml/page/T_Rules.qml" line="437"/>
+        <location filename="qml/page/T_Rules.qml" line="483"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="475"/>
+        <location filename="qml/page/T_Rules.qml" line="476"/>
         <source>nr</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="490"/>
+        <location filename="qml/page/T_Rules.qml" line="491"/>
         <source>status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/page/T_Rules.qml" line="497"/>
+        <location filename="qml/page/T_Rules.qml" line="498"/>
         <source>Change to</source>
         <translation type="unfinished"></translation>
     </message>

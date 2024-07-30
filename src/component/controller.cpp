@@ -138,7 +138,7 @@ int Controller::updateRule(int n, int option, QString script)
     }
 }
 
-int Controller::updateExitRule(int n, int option, long newReval)
+int Controller::updateExitRule(int n, int option, QString newReval)
 {
     QString nr = QString::number(n);
     if(Watcher::seccomp_force_enable_calls(n)) return 0;
@@ -152,7 +152,7 @@ int Controller::updateExitRule(int n, int option, long newReval)
         }
         else
         {
-            qint64 v = newReval;
+            qint64 v = newReval.toLong();
             arr[3] = QJsonValue(v);
         }
         currentRules[nr] = arr;
@@ -467,10 +467,9 @@ void Controller::notifySyscallExit(int pid, int nr, long syscallreval)
         stopBlockingExit(isRemote, SYSMSG_KEEP_ORIG_REVAL, SYSMSG_STOP_BLOCKING);
         break;
     case JAIL_SYS_CALL_EXIT_CHANGE:
-        stopBlockingExit(isRemote, SYSMSG_CHANGE_REVAL, SYSMSG_STOP_BLOCKING, syscallreval);
+        stopBlockingExit(isRemote, SYSMSG_CHANGE_REVAL, SYSMSG_STOP_BLOCKING, ja[3].toInteger());
         break;
     case JAIL_SYS_CALL_EXIT_NOTIFY:
-
         sname = findSyscallName(nr);
         emit showSyscallExit(pid, sname, nr, QString::number(syscallreval));
         stopBlockingExit(isRemote, 0, SYSMSG_DEAL_LATER);

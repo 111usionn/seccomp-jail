@@ -271,7 +271,7 @@ FluContentPage{
     FluContentDialog{
         id: rules_dialog_edit_reval
         property int target_nr: 0
-        property int returnval
+        property string returnval
         title: qsTr("Custom return value")
         message: qsTr("Input your return value here")
         negativeText: qsTr("Cancel")
@@ -279,15 +279,16 @@ FluContentPage{
         contentDelegate: Component{
             Item{
                 implicitWidth: parent.width
+                implicitHeight: 50
                 x: 20
                 FluTextBox {
                     id: script_input
                     width: parent.width - 50
                     Component.onCompleted: {
-                        rules_dialog_edit_reval.script = Qt.binding(function(){return text})
+                        rules_dialog_edit_reval.returnval = Qt.binding(function(){return text})
                     }
                     Connections {
-                        target: rules_dialog_edit_script
+                        target: rules_dialog_edit_reval
                         function onDisplayScript(s) {
                             script_input.text = s
                         }
@@ -306,7 +307,7 @@ FluContentPage{
         }
         positiveText: qsTr("Save")
         onPositiveClicked: {
-            var reval = controller.updateExitRule(target_nr, 2, returnval)
+            var reval = controller.updateExitRule(target_nr, 1, returnval)
             if(reval == 1) {
                 showSuccess(qsTr("Return value saved"))
             }
@@ -358,7 +359,7 @@ FluContentPage{
                     text: qsTr("Update exit rule")
                     onClicked: {
                         var obj = table_view.getRow(row)
-                        if(rule_selecter.currentValue != 1) {
+                        if(exit_rule_selecter.currentValue != 1) {
                             var reval = controller.updateExitRule(obj.nr, exit_rule_selecter.currentValue)
                             if(reval == 1) {
                                 showSuccess(qsTr("Updated"))
@@ -368,8 +369,8 @@ FluContentPage{
                             }
                         }
                         else {
-                            rules_dialog_edit_script.target_nr = obj.nr
-                            rules_dialog_edit_script.open()
+                            rules_dialog_edit_reval.target_nr = obj.nr
+                            rules_dialog_edit_reval.open()
                             //reval = controller.updateRule(obj.nr, rule_selecter.currentValue, script)
                         }
                     }
