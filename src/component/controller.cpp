@@ -317,6 +317,13 @@ void Controller::readDataFromSocket(QByteArray qba)
         iN >> exit_code >> pid >> status >> data.nr >> data.args[0] >> data.args[1] >> data.args[2] >> data.args[3] >> data.args[4] >> data.args[5] >> data.args[6] >> dargs;
         notifySyscall(pid, status, data, dargs, exit_code);
     }
+    else if(temp.type == COMMAND_FROM_REMOTE_HANDLESYSCALLEXIT)
+    {
+        int pid, nr;
+        qint64 reval;
+        iN >> pid >> nr >> reval;
+        notifySyscallExit(pid, nr, reval);
+    }
 }
 
 QString Controller::findSyscallName(int nr)
@@ -448,11 +455,11 @@ void Controller::notifySyscall(int pid, int status, seccomp_data data, QList<QSt
     }
 }
 
-void Controller::notifySyscallExit(int pid, int nr, long syscallreval, int remote_script_resp)
+void Controller::notifySyscallExit(int pid, int nr, long syscallreval)
 {
     QString sname;
     QJsonArray ja = checkRule(nr);
-    int resp_type = remote_script_resp == -1?ja[2].toInt():remote_script_resp;
+    int resp_type = ja[2].toInt();
     qDebug() << ja[0] << ja[1] << ja[2] << ja[3];
     switch(resp_type)
     {

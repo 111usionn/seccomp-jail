@@ -49,7 +49,7 @@ public slots:
     void startInject(int pid, int nr, long arg1, long arg2, long arg3, long arg4, long arg5, long arg6, int argc);
     void getCommand(bool mode, int pid, int status, int nr, QString arg1, QString arg2, QString arg3, QString arg4, QString arg5, QString arg6, int mask, int nextMove, int blockSig, int extraOption);
     void isRemote_setter(bool val);
-    void notifySyscallExit(int pid, int nr, long syscallreval, int remote_script_resp = -1);
+    void notifySyscallExit(int pid, int nr, long syscallreval);
 
 private:
     QThread* thread;

@@ -51,6 +51,16 @@ void SubController::readData(QByteArray qba)
                     emit sendDataToServerR(pkg);
                 });
 
+        connect(watcher, &Watcher::handleSyscallExit,
+                [=](int pid, int nr, long syscallreval)
+                {
+                    DataPackage pkg;
+                    pkg.type = COMMAND_FROM_REMOTE_HANDLESYSCALLEXIT;
+                    QDataStream out(&pkg.data, QIODevice::WriteOnly);
+                    qint64 sr = syscallreval;
+                    out << pid << nr << sr;
+                    emit sendDataToServerR(pkg);
+                });
         connect(watcher, &Watcher::sendPeekData,
                 [=](int pid, int num, long data)
                 {
@@ -168,13 +178,21 @@ void SubController::readData(QByteArray qba)
     }
     else if(temp.type == COMMAND_TO_REMOTE_PUSH_EVENT)
     {
-        qDebug() << 456;
         int pid, status, nr;
         QString arg1, arg2, arg3, arg4, arg5, arg6;
         int mask, nextMove, blockSig, extraOption;
         bool mode;
         iN >> mode >> pid >> status >> nr >> arg1 >> arg2 >> arg3 >> arg4 >> arg5 >> arg6 >> mask >> nextMove >> blockSig >> extraOption;
         emit pushEvent(mode, pid, status, nr, arg1, arg2, arg3, arg4, arg5, arg6, mask, nextMove, blockSig, extraOption);
+    }
+    else if(temp.type == COMMAND_TO_REMOTE_STOP_BLOCKING_EXIT)
+    {
+        int option, bs;
+        qint64 newreval;
+        iN >> option >> bs >> newreval;
+        watcher->nextMove_exit = option;
+        watcher->blockSig_exit = bs;
+        watcher->newReval = newreval;
     }
 }
 
