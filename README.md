@@ -301,6 +301,18 @@ pstree(大部分linux发行版应该都有)
 
 系统根据用户自定义的bash脚本判断执行规则为Notify、Allow或Abort，在系统调用捕获后，会把发起调用的进程pid，六个参数，六个解引用后的参数分别存储在变量：PID、SJ_ARG1-SJ_ARG6、SJ_DARG1-J_DARG6中，可供在脚本中使用。
 
+脚本应使用退出码判断实际应该执行的操作
+
+```
+# 0：通过 1：拒绝 2：通知
+exit [0~2]
+```
+
+下图是一个例子，意为判断程序第一个参数是否为123，若是则交给用户处理，否则直接通过。
+
+![s](https://github.com/user-attachments/assets/cba7d95f-671a-41a5-9b10-ace2d79c00d3)
+
+
 (脚本编写不当可能会导致程序卡死等问题，请保证脚本在任何情况下都有一个出口。)
 
 ##### 出口规则
@@ -356,45 +368,6 @@ ip:port path
 ###### 拒绝并添加规则
 
 拒绝执行该系统调用，后续该系统调用自动审批拒绝。
-- [seccomp-jail 项目文档](#seccomp-jail-项目文档)
-  - [项目描述](#项目描述)
-  - [赛题](#赛题)
-  - [赛题完成情况](#赛题完成情况)
-  - [开发日程](#开发日程)
-  - [演示视频](#演示视频)
-  - [原理介绍](#原理介绍)
-    - [PTRACE](#ptrace)
-    - [SECCOMP](#seccomp)
-    - [linux下的进（线）程](#linux下的进线程)
-    - [软件工作流程](#软件工作流程)
-  - [代码目录索引](#代码目录索引)
-  - [使用说明](#使用说明)
-    - [环境/依赖](#环境依赖)
-    - [编译/安装](#编译安装)
-    - [页面介绍](#页面介绍)
-    - [使用流程](#使用流程)
-    - [注意事项](#注意事项)
-  - [样例测试](#样例测试)
-    - [Test1: mkdir test](#test1-mkdir-test)
-    - [Test2: mkdir test1](#test2-mkdir-test1)
-    - [Test3: 测试动态改变规则](#test3-测试动态改变规则)
-    - [Test4: 更改系统调用号](#test4-更改系统调用号)
-    - [Test5: 多进程程序1](#test5-多进程程序1)
-    - [Test6: 多进程程序2](#test6-多进程程序2)
-    - [Test7: 主动执行系统调用测试](#test7-主动执行系统调用测试)
-    - [Test8: 更改系统调用返回值测试](#test8-更改系统调用返回值测试)
-  - [开发过程中遇到的问题](#开发过程中遇到的问题)
-    - [seccomp的功能限制](#seccomp的功能限制)
-    - [不使用ptrace操作进程](#不使用ptrace操作进程)
-  - [目前已知问题](#目前已知问题)
-  - [未来扩展功能](#未来扩展功能)
-  - [参考资料及许可证信息](#参考资料及许可证信息)
-    - [ptrace](#ptrace-1)
-    - [seccomp](#seccomp-1)
-    - [waitpid](#waitpid)
-    - [libseccomp -LGPL-2.1 license](#libseccomp--lgpl-21-license)
-    - [QML FluentUI -MIT license](#qml-fluentui--mit-license)
-    - [Stack Overflow](#stack-overflow)
 
 ###### 查看详细信息
 
@@ -402,7 +375,7 @@ ip:port path
 
 ##### 系统调用出口
 
-进程pid，系统调用号/名，返回值等信息会显示在界面上，为了与系统调用入口进行区别，系统调用名尾部会添加"_EXIT"，返回值会显示在arg1处，修改该栏位即可修改返回值，修改其他栏位无意义。可选择的行动有两种：
+进程pid，系统调用号/名，返回值等信息会显示在界面上，为了与系统调用入口进行区别，系统调用名尾部会添加"_EXIT"，返回值会显示在arg1处，修改该栏位即可修改返回值，其他栏位为-1，占位用，修改无意义。可选择的行动有两种：
 
 ###### 不更改
 
@@ -768,7 +741,17 @@ int main()
 
 #### 过程：
 
+设置好规则并开始监控目标程序后，发现返回值信息在界面上提示。
 
+![image](https://github.com/user-attachments/assets/55edcd3a-1582-4ede-a333-2ac3613eac0a)
+
+将返回值修改为 -23333 以让程序进入正常运行中不可能进入的if语句
+
+![image](https://github.com/user-attachments/assets/33bb54f3-ff9b-49cf-879e-cc6df4133259)
+
+观察终端，发现成功到达了本永远无法进入的if中（一些调试信息未来得及删除，见谅(；д；) ）
+
+![image](https://github.com/user-attachments/assets/d6adb34f-1133-47d8-acc1-fcda88d5baca)
 
 ## 开发过程中遇到的问题
 
