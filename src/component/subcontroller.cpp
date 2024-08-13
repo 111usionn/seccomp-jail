@@ -38,7 +38,6 @@ void SubController::readData(QByteArray qba)
         connect(watcher, &Watcher::destroyed, watcherThread, &QThread::deleteLater);
         connect(this, &SubController::threadQuit, watcherThread, &QThread::terminate);
         watcherThread->start();
-
         connect(this, &SubController::st, watcher, &Watcher::createPuppet);
 
         connect(watcher, &Watcher::catchSyscall,

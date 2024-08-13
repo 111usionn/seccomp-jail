@@ -88,4 +88,5 @@ struct DataPackage {
     int type;
     QByteArray data;
 };
+
 #endif

@@ -9,7 +9,6 @@ Page {
     property bool animationEnabled: FluTheme.animationEnabled
     property string url : ""
     id: control
-    StackView.onRemoved: console.log("rm")
     padding: 5
     visible: false
     opacity: visible

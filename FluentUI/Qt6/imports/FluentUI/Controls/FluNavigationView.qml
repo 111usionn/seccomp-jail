@@ -1276,9 +1276,7 @@ Item {
                     {
                         tempstack.push(nav_stack.pop())
                         tempstack2.push(d.stackItems.pop())
-                        console.log("pop other", )
                     }
-                    console.log("pop this")
                     var targetpage1
                     if(nav_stack.depth === 1)
                     {
@@ -1289,11 +1287,9 @@ Item {
                     var targetpage2 = d.stackItems.pop()
                     while(tempstack.length != 0)
                     {
-                        console.log("push other")
                         nav_stack.push(tempstack.pop())
                         d.stackItems.push(tempstack2.pop())
                     }
-                    console.log("push this",targetpage1)
                     nav_stack.push(targetpage1)
                     d.stackItems.push(targetpage2)
                     return
