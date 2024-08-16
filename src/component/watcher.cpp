@@ -64,6 +64,7 @@ void Watcher::dealNow(bool mode, int pid, int status, int nr, QString arg1, QStr
 
 void Watcher::waiting_for_inject(int pid)
 {
+    qDebug() << "fk";
     if(has_trap.contains(pid))
     {
         if(has_trap.value(pid) == 1)
@@ -74,7 +75,7 @@ void Watcher::waiting_for_inject(int pid)
             long code = orig_code;
             long cc = 0xcc;
             memcpy(&code, &cc, 1);
-            ptrace(PTRACE_POKEDATA, pid, rip, code);
+            qDebug() << "wfj" << ptrace(PTRACE_POKEDATA, pid, rip, code);
             has_trap.insert(pid, 0);
         }
     }
@@ -84,32 +85,21 @@ void Watcher::injector(int pid, int nr, long arg1, long arg2, long arg3, long ar
 {
     if(proactiveInterrupt(pid))return;
     emit processStopped(pid);
-    siginfo_t stat;
-    for(int i = 0; i < 1000 ; i++)
+    int status = 0;
+    QTime s_time = QTime::currentTime();
+    while(1)
     {
-        memset(&stat, 0, sizeof(stat));
-        waitid(P_PID, pid, &stat, WNOHANG | WNOWAIT);
-        if(stat.si_status != 0)
-        {
-            if(stat.si_status >> 8 == (SIGTRAP | (PTRACE_EVENT_STOP<<8)))
-            {
-                waitpid(pid, 0, 0);
-                break;
-            }
-            else
-            {
-                syscall_info tempinfo = {syscall_info::ENTRY, 0, argc, nr, arg1, arg2, arg3, arg4, arg5, arg6};
-                //                       /*      useless      *//*                 useful                   */
-                inject_events.insert(pid, tempinfo);
-                has_trap.insert(pid, 1);
-                //push event
-                return;
-            }
-        }
+        qDebug() << "123";
+        waitpid(pid, &status, WNOHANG);
+        if(status)break;
+        sleep(1);
+        if(s_time.secsTo(QTime::currentTime()) > 3)break;
     }
-    if(!stat.si_status)
+    if(status >> 8 != (SIGTRAP | (PTRACE_EVENT_STOP << 8)))
     {
+        qDebug() << "asdf";
         syscall_info tempinfo = {syscall_info::ENTRY, 0, argc, nr, arg1, arg2, arg3, arg4, arg5, arg6};
+        //                       /*      useless      *//*                 useful                   */
         inject_events.insert(pid, tempinfo);
         has_trap.insert(pid, 1);
         //push event
@@ -123,7 +113,6 @@ void Watcher::injector(int pid, int nr, long arg1, long arg2, long arg3, long ar
     buf = (char*) malloc(0x100);
     do{
         fgets(buf, 0x100, fd);
-        qDebug () << buf;
     } while(!strstr(buf, settings.enableLDPRELOAD?"libhookhere.":"libc.") || !strstr(buf, "xp "));
     end = strchr(buf, '-');
     libcAddr = strtol(buf, &end, 16);
