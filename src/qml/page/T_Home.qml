@@ -7,7 +7,7 @@ import "../component"
 
 FluContentPage{
     id: hp
-    launchMode: FluPageType.SingleTask
+    launchMode: FluPageType.SingleInstance
     title: qsTr("Trace")
 
     Flipable {

@@ -18,7 +18,7 @@ FluWindow {
     minimumWidth: 600
     minimumHeight: 240
     title: "seccomp-jail"
-    launchMode: FluWindowType.SingleTask
+    launchMode: FluWindowType.SingleInstance
     fitsAppBarWindows: true
     appBar: FluAppBar {
         id: appbar

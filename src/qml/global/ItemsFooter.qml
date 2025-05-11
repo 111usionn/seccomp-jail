@@ -12,19 +12,20 @@ FluObject{
 
     FluPaneItemSeparator{}
 
+    /*
     FluPaneItem{
         title:qsTr("About")
         icon:FluentIcons.Contact
         onTapListener:function(){
             FluRouter.navigate("/about")
         }
-    }
+    }*/
 
     FluPaneItem{
         title:qsTr("Settings")
         menuDelegate: paneItemMenu
         icon:FluentIcons.Settings
-        url:"qrc:/example/qml/page/T_Settings.qml"
+        url:"qrc:/qml/page/T_Settings.qml"
         onTap:{
             navigationView.push(url)
         }

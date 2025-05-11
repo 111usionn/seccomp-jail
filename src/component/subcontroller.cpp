@@ -38,6 +38,7 @@ void SubController::readData(QByteArray qba)
         connect(watcher, &Watcher::destroyed, watcherThread, &QThread::deleteLater);
         connect(this, &SubController::threadQuit, watcherThread, &QThread::terminate);
         watcherThread->start();
+        connect(watcher, &Watcher::send_user_movement_observer_pid, this, &SubController::set_user_movement_observer_pid);
         connect(this, &SubController::st, watcher, &Watcher::createPuppet);
 
         connect(watcher, &Watcher::catchSyscall,
@@ -112,8 +113,9 @@ void SubController::readData(QByteArray qba)
         QString path;
         QStringList args;
         QJsonObject rules;
-        iN >> path >> args >> rules;
-        emit st(path, args, rules);
+        bool stop_mode;
+        iN >> path >> args >> rules >> stop_mode;
+        emit st(path, args, rules, stop_mode);
     }
     else if(temp.type == COMMAND_TO_REMOTE_STOP_BLOCKING)
     {
@@ -183,6 +185,7 @@ void SubController::readData(QByteArray qba)
         bool mode;
         iN >> mode >> pid >> status >> nr >> arg1 >> arg2 >> arg3 >> arg4 >> arg5 >> arg6 >> mask >> nextMove >> blockSig >> extraOption;
         emit pushEvent(mode, pid, status, nr, arg1, arg2, arg3, arg4, arg5, arg6, mask, nextMove, blockSig, extraOption);
+        tgkill(user_movement_observer_pid, user_movement_observer_pid, SIGRTMAX-1);
     }
     else if(temp.type == COMMAND_TO_REMOTE_STOP_BLOCKING_EXIT)
     {

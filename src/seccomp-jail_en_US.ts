@@ -17,12 +17,7 @@
 <context>
     <name>ItemsFooter</name>
     <message>
-        <location filename="qml/global/ItemsFooter.qml" line="16"/>
-        <source>About</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/global/ItemsFooter.qml" line="24"/>
+        <location filename="qml/global/ItemsFooter.qml" line="25"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -468,6 +463,19 @@
     <message>
         <location filename="qml/page/T_Rules.qml" line="498"/>
         <source>Change to</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>T_Settings</name>
+    <message>
+        <location filename="qml/page/T_Settings.qml" line="12"/>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/page/T_Settings.qml" line="20"/>
+        <source>All-stop mode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

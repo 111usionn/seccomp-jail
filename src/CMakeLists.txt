@@ -58,6 +58,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         component/controller.cpp component/controller.h component/watcher.cpp component/watcher.h component/global.h
         component/clipboard.cpp component/clipboard.h
         component/mytcpserver.cpp component/mytcpserver.h component/mytcpsocket.cpp component/mytcpsocket.h
+        component/CircularReveal.cpp component/ruleprocessor.cpp component/ruleprocessor.h component/scriptrunner.cpp component/scriptrunner.h
 
     )
     add_executable("${PROJECT_NAME}-net-core"

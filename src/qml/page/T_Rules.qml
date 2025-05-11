@@ -8,7 +8,7 @@ import "../component"
 
 FluContentPage{
     id: rules_root
-    launchMode: FluPageType.SingleTask
+    launchMode: FluPageType.SingleInstance
     title: qsTr("Rules")
     property var json
     property string rule_path: ""

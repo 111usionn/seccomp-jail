@@ -13,5 +13,6 @@
         <file>qml/page/T_Proc.qml</file>
         <file>qml/page/T_Logs.qml</file>
         <file>qml/window/sdw.qml</file>
+        <file>qml/page/T_Settings.qml</file>
     </qresource>
 </RCC>

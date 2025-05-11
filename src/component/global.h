@@ -1,8 +1,8 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#endif // GLOBAL_H
 
+//syscall-entry action
 #define JAIL_SYS_CALL_PASS 0
 #define JAIL_SYS_CALL_ABORT 1
 #define JAIL_SYS_CALL_NOTIFY 2
@@ -10,6 +10,7 @@
 #define JAIL_SYS_CALL_ABORT_FOREVER 4
 #define JAIL_SYS_CALL_CUSTOM 5
 
+//syscall-exit action
 #define JAIL_SYS_CALL_EXIT_DEFAULT 0
 #define JAIL_SYS_CALL_EXIT_CHANGE 1
 #define JAIL_SYS_CALL_EXIT_NOTIFY 2
@@ -21,6 +22,7 @@
 #define SYSMSG_KEEP_ORIG_REVAL 5
 #define SYSMSG_CHANGE_REVAL 6
 
+//remote-mode
 #define COMMAND_TO_REMOTE_START_TRACE 0
 #define COMMAND_TO_REMOTE_STOP_BLOCKING 1
 #define COMMAND_TO_REMOTE_RUN_SCRIPT 2
@@ -61,12 +63,9 @@
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QFile>
+#include <QMetaType>
 #include <sys/user.h>
-#include "mytcpserver.h"
-#include "mytcpsocket.h"
 
-#ifndef STRUCTS
-#define STRUCTS
 struct syscall_info{
     enum {
         ENTRY,
@@ -89,4 +88,4 @@ struct DataPackage {
     QByteArray data;
 };
 
-#endif
+#endif // GLOBAL_H

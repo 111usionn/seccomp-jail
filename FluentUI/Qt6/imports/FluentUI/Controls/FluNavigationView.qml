@@ -1263,8 +1263,6 @@ Item {
         function stackPush(){
             var nav_stack = loader_content.item.navStack()
             var nav_stack2 = loader_content.item.navStack2()
-            var tempstack = []
-            var tempstack2 = []
             var page = nav_stack.find(function(item) {
                 return item.url === url;
             })
@@ -1274,24 +1272,9 @@ Item {
                 case FluPageType.SingleTask:
                     while(nav_stack.currentItem !== page)
                     {
-                        tempstack.push(nav_stack.pop())
-                        tempstack2.push(d.stackItems.pop())
+                        nav_stack.pop()
+                        d.stackItems = d.stackItems.slice(0, -1)
                     }
-                    var targetpage1
-                    if(nav_stack.depth === 1)
-                    {
-                        targetpage1 = nav_stack.currentItem
-                        nav_stack.clear()
-                    }
-                    else targetpage1 = nav_stack.pop()
-                    var targetpage2 = d.stackItems.pop()
-                    while(tempstack.length != 0)
-                    {
-                        nav_stack.push(tempstack.pop())
-                        d.stackItems.push(tempstack2.pop())
-                    }
-                    nav_stack.push(targetpage1)
-                    d.stackItems.push(targetpage2)
                     return
                 case FluPageType.SingleTop:
                     if (nav_stack.currentItem.url === url){

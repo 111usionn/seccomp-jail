@@ -7,7 +7,7 @@ import ClipBoard 1.0
 import "../component"
 
 FluContentPage{
-    launchMode: FluPageType.SingleTask
+    launchMode: FluPageType.SingleInstance
     title: qsTr("Logs")
 
     Component{
